@@ -1,0 +1,202 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <!-- <ion-icon name="close-circle-outline" slot="end" style="padding-right: 5px;zoom:1.5" (click)="closeModal()"></ion-icon> -->
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="closeModal()" style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="margin-right: 40px;text-align: center;">AUDIT CYCLES</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: #F7F8FC;">
+  <form   >
+      <!-- <ion-card style="background: white;"  >
+          <ion-grid style="padding: 0px;margin: 0px 0;">
+              <ion-row style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+                <ion-col size="11">
+                  <ion-input type="text" readonly  style="color: white;" value='Select Audit Type First'></ion-input>
+                </ion-col>
+                <ion-col size="1" class="ion-text-end" style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+                  <ion-icon name="information-circle-outline" color="light"></ion-icon>
+                </ion-col>
+               </ion-row>
+          </ion-grid>     
+      </ion-card> -->
+      <!-- let i = index added by archana jira-ID-MOBILE-466 -->
+    <div class="row"  *ngFor = "let cycle of allCycleData; let i = index">
+      <div class="col">
+        <!-- <h2>Open <b>multiple</b></h2> -->
+        <div class="tabs">
+          <div class="tab">
+            <input type="checkbox" id="i" [checked]="cycle.isChecked == true"   >
+            <!-- (click)="checkEvent(cycle) replaced by archana jira-ID-MOBILE-466 -->
+            <label class="tab-label" (click)="checkEvent(cycle)">CYCLE   {{( cycle.cycleGenNo== 0) ? '1':''}}  {{dirInterOrAdd==true ? (cycle.cycleGenNo) : cycle.cycleGenNo ? ( cycle.cycleGenNo+1):''}}</label>
+            <div class="tab-content">
+              <form  >
+                <ion-card>
+                <ion-grid> 
+                  <ion-row>
+                    <ion-col></ion-col>
+                    <ion-col><p class="cycle-title">{{ ( cycle.cycleGenNo== 0 ) ? 'INITIAL':'RENEWAL'}} {{ cycle.cycleGenNo ? ( cycle.cycleGenNo):''}}</p></ion-col>
+                    <ion-col></ion-col>                    
+                  </ion-row> 
+                  <ion-row> 
+                    <ion-col  >
+                      <div class="item-row-left">START DATE
+                        <!-- {{cycle.creditDate ? moment(cycle.creditDate,'YYYYMMDD').format('DD-MMM-YYYY'):'-'}} -->
+                      </div> 
+                    </ion-col>
+                    <ion-col >
+                      <div class="item-row-right">  {{(cycle.creditDate=='')?'-':moment(cycle.creditDate ? cycle.creditDate :'-' ).format('DD-MMM-YYYY')}} </div><!--modified by lokesh for jira_id(742)-->
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">DUE DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">-</div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">END DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">-</div>
+                    </ion-col>
+                  </ion-row> 
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">SKIP</div>
+                    </ion-col>
+                    <ion-col><!--added by lokesh for jira_id(742)-->
+                      <div style="text-align: center;" *ngIf="cycle.creditDate==''">
+                        <ion-checkbox color="primary" checked disabled ></ion-checkbox>
+                      </div>
+                      <div style="text-align: center;" *ngIf="cycle.creditDate!=''">
+                        <ion-checkbox color="primary" disabled ></ion-checkbox>
+                      </div>
+                    </ion-col>
+                  </ion-row> 
+                </ion-grid>
+              </ion-card>
+
+              <ion-card>
+                <ion-grid> 
+                  <ion-row>
+                    <ion-col></ion-col>
+                    <ion-col><p class="cycle-title">INTERMEDIATE </p></ion-col>
+                    <ion-col></ion-col>                    
+                  </ion-row> 
+                  <ion-row> 
+                    <ion-col  >
+                      <div class="item-row-left">START DATE</div>
+                    </ion-col>
+                    <ion-col > 
+                      <div class="item-row-right">{{(cycle.nextIntermediateStart=='')?'-': moment(cycle.nextIntermediateStart ? cycle.nextIntermediateStart :'-').format('DD-MMM-YYYY')}}</div><!--modified by lokesh for jira_id(742)-->
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">DUE DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">{{(cycle.intermediateDueDate=='')?'-':moment( cycle.intermediateDueDate? cycle.intermediateDueDate :'-').format( 'DD-MMM-YYYY')}}</div><!--modified by lokesh for jira_id(742)-->
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">END DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">{{(cycle.nextIntermediateEnd=='')?'-':moment( cycle.nextIntermediateEnd ? cycle.nextIntermediateEnd :'-' ).format( 'DD-MMM-YYYY')}}</div><!--modified by lokesh for jira_id(742)-->
+                    </ion-col>
+                  </ion-row> 
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">SKIP</div>
+                    </ion-col>
+                    <ion-col>
+                      <div style="text-align: center;" *ngIf="cycle.nextIntermediateEnd=='' && cycle.intermediateDueDate=='' && cycle.nextIntermediateStart==''">
+                        <ion-checkbox color="primary"  checked disabled ></ion-checkbox>
+                      </div><!--added by lokesh for jira_id(742)-->
+                      <div style="text-align: center;" *ngIf="cycle.nextIntermediateEnd!='' && cycle.intermediateDueDate!='' &&cycle.nextIntermediateStart!=''">
+                        <ion-checkbox color="primary"  disabled ></ion-checkbox>
+                      </div>
+                    </ion-col>
+                  </ion-row> 
+                </ion-grid>
+              </ion-card>
+
+              <ion-card>
+                <ion-grid> 
+                  <ion-row>
+                    <ion-col></ion-col>
+                    <p class="cycle-title">RENEWAL {{ ( cycle.cycleGenNo== 0) ? '1':''}} {{ cycle.cycleGenNo ? ( cycle.cycleGenNo+1):''}}  </p><!--modified by lokesh jiar id(685)-->
+                    <ion-col></ion-col>                    
+                  </ion-row> 
+                  <ion-row> 
+                    <ion-col  >
+                      <div class="item-row-left">START DATE</div>
+                    </ion-col>
+                    <ion-col >
+                      <div class="item-row-right">{{moment(cycle.nextRenewalStart &&  cycle.nextRenewalStart!='-' ? cycle.nextRenewalStart  :'-').format( 'DD-MMM-YYYY')}}</div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">DUE DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">{{moment( cycle.nextRenewalDueDate? cycle.nextRenewalDueDate :'-').format( 'DD-MMM-YYYY')}}</div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">END DATE</div>
+                    </ion-col>
+                    <ion-col>
+                      <div class="item-row-right">{{moment( cycle.nextRenewal ? cycle.nextRenewal :'-' ).format( 'DD-MMM-YYYY')}}</div>
+                    </ion-col>
+                  </ion-row> 
+                  <ion-row>
+                    <ion-col>
+                      <div class="item-row-left">SKIP</div>
+                    </ion-col>
+                    <ion-col>
+                      <div style="text-align: center;">
+                        <ion-checkbox color="primary" disabled ></ion-checkbox>
+                      </div>
+                    </ion-col>
+                  </ion-row> 
+                </ion-grid>
+              </ion-card> 
+             
+              </form>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+  </form>
+</ion-content>
+<!-- <ion-footer no-border>
+  <ion-toolbar style=" --background: #f7f8fc !important;">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-chip outline color="primary" style="width: 100%;background:#213b5c;margin: 0;" [disabled]="!issuerSignFlag" (click)="validateAndGenerateCert()">
+            <ion-label style="margin-left: auto;margin-right: auto;color: white;">Generate</ion-label>
+          </ion-chip>
+        </ion-col>
+        <ion-col size="6">
+          <ion-chip outline color="primary" style="width: 100%;background:#1b536e;margin: 0;" (click)="validateAndDownloadCert()">
+            <ion-label style="margin-left: auto;margin-right: auto; color: white;">Download</ion-label>
+          </ion-chip>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer> -->

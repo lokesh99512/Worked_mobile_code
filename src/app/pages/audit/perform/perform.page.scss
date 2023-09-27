@@ -1,0 +1,104 @@
+
+.filterIcon{
+    zoom: 1.5;
+}
+
+.content{
+    background: #F7F8FC;
+}
+
+.filterOption{
+    display: none;
+}
+
+
+.cardButton , .cardButton2{
+    height: 27px;
+    width: 75px;
+}
+
+
+
+@media screen and (orientation:portrait) {
+    .cardButton2{
+        margin-left: -27%;      //modified by lokesh for jira_id(666)
+    }
+}
+
+
+@media screen and (orientation:landscape) {
+    .cardButton2{
+        margin-left: -32%;//modified by lokesh for jira_id(666)
+    }
+}
+
+@media only screen and (min-width: 769px) and (min-height: 768px) {                   //added by archana for jira ID-MOBILE-475
+    .custom-field1 input {
+      //added by archana for jira ID-MOBILE-475
+      border: none;
+      -webkit-appearance: none;
+      -ms-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: #f2f2f2;
+      padding: 16px;
+      border-radius: 3px;
+      width: 705px !important;
+      color: black;
+      font-size: 14px;
+      box-shadow: none;
+      border-bottom: none;
+      height: -1px !important;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      font-size: initial;
+    }
+ 
+  }
+ 
+  @media screen and (max-width: 768px) {                        //added by archana for jira ID-MOBILE-475
+    .custom-field1 input {
+      
+      border: none;
+      -webkit-appearance: none;
+      -ms-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: #f2f2f2;
+      padding: 12px;
+      border-radius: 3px;
+      width: 282px;
+      color: black;
+      font-size: 14px;
+      box-shadow: none;
+      border-bottom: none;
+      height: -1px !important;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      font-size: initial;
+    }
+  }
+ 
+  
+ ::ng-deep .custom-field1 .mat-icon-button {
+   color: white !important;
+   margin-bottom: 12px;
+   }
+ 
+
+
+// ion-card{
+//     display: flex;
+//     flex-direction: column;
+//     width: 100% !important;
+//     margin: 0 !important;
+//   }
+
+// .popover-wrapper .popover-content{
+//     position: relative !important;
+//     margin: 0 auto !important;
+//     left: auto !important;
+//     top: auto !important;
+// }
+
+

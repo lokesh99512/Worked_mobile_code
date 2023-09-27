@@ -1,0 +1,7 @@
+{
+  "name": "auditingApp",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12">
+      <ion-item class="ionIten">
+
+        <ion-label position="stacked" color="dark">{{auditTypeDesc}} Code</ion-label>
+        <ionic-selectable item-content [items]="auditCodeArrayListItems" [canSearch]="true"
+          (onChange)="auditCodeOnChange($event)" [(ngModel)]="selectedAuditCode" closeButtonSlot="end">
+          <ng-template ionicSelectableTitleTemplate>
+            {{auditTypeDesc}} Code  <!-- Changed by @Archana 13-06-2022 ID:MOBILE-588-->
+          </ng-template>
+        </ionic-selectable>
+
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+      <ion-item class="ionIten">
+        <ion-label position="stacked" color="dark">{{auditTypeDesc}} Element</ion-label>
+        <ion-input type='text' [(ngModel)]="selectedAuditElement" readonly></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+
+      <ion-item class="ionIten">
+        <ion-label position="stacked" color="dark">Category</ion-label>
+        <!-- [canSearch]="this.auditTypeDesc == 'DMLC II' ? false : true" //code removed by archana 23-06-2022 jira-Id=MOBILE-549 -->
+        <ionic-selectable item-content [items]="categoryArrayListItems" [disabled]="!selectedAuditCode"
+           [isEnabled]=isAuditCategoryEnabled
+          [(ngModel)]="selectedAuditCategory" closeButtonSlot="end">
+          <ng-template ionicSelectableTitleTemplate>
+            Category
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer class="footer">
+
+  <ion-card>
+    <ion-row style="color:black">
+      <ion-col size="6">
+        <ion-button expand="full" color="danger" fill="clear" (click)="closeModal()">
+          Cancel
+          <ion-icon slot="start" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="full" fill="clear" (click)="updateFinding()">
+          Add
+          <ion-icon slot="start" name="newspaper-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</ion-footer>

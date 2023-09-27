@@ -1,0 +1,138 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="goBack()" style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="margin-right: 40px;text-align: center;">
+      {{auditType =='Review' ? 'REVIEW NOTE' : 'PREVIOUS FINDINGS'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <mat-accordion class="header" *ngIf="auditType !='Review'">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h3 ion-text color="dark" style="font-weight: bold;margin-top:15px;margin-bottom:15px">Finding Status</h3>
+      </mat-expansion-panel-header>
+
+      <ion-grid style="margin-top:-10px">
+        <ion-row>
+          <ion-col size="2">
+            {{this.majorCountDesc}}
+          </ion-col>
+          <ion-col size="8">
+            <hr>
+          </ion-col>
+          <ion-col size="2">
+            {{majorCount}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="this.auditauditType=='MLC'">
+          <ion-col size="4">
+            {{this.minorCountDesc}}
+          </ion-col>
+          <ion-col size="6">
+            <hr>
+          </ion-col>
+          <ion-col size="2">
+            {{minorCount}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="this.auditauditType!='MLC'">
+          <!--  size="4" changed by archana for jira ID-MOBILE-914 -->
+          <ion-col size="4">
+            {{this.minorCountDesc}}
+          </ion-col>
+          <ion-col size="6">
+            <hr>
+          </ion-col>
+          <ion-col size="2">
+            {{minorCount}}
+          </ion-col>
+        </ion-row>
+        <!-- code removed by archana for jira-ID-MOBILE-856 -->
+        <!-- <ion-row>
+          <ion-col size="2">
+            {{this.obsCountDesc}}
+          </ion-col>
+          <ion-col size="8">
+            <hr>
+          </ion-col>
+          <ion-col size="2">
+            {{obsCount}}
+          </ion-col>
+        </ion-row> -->
+      </ion-grid>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+  <ion-card mode="ios" *ngFor="let findingItem of pfList">
+    <ion-card-header>
+      <ion-card-subtitle>{{findingItem.serialNo}}</ion-card-subtitle>
+      <ion-item-divider></ion-item-divider>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col class="ion-no-padding ion-no-margin" size="6">
+            <ion-row>
+              <ion-col class="ion-no-padding" size="3">
+                <ion-icon style="margin-top:10px" name="list-outline"></ion-icon>
+              </ion-col>
+              <ion-col class="ion-no-padding" size="9">
+                <ion-card-subtitle style="font-size: 11px;">
+                  {{auditTypeDesc}} Code
+                </ion-card-subtitle>
+                <ion-card-subtitle color="dark" style="font-size: 12px;">
+                  {{findingItem.auditCode}}
+                </ion-card-subtitle>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+          <ion-col class="ion-no-padding ion-no-margin" size="6">
+            <ion-row>
+              <ion-col class="ion-no-padding" size="3">
+                <ion-icon style="margin-top:10px" name="stats-chart-outline"></ion-icon>
+              </ion-col>
+              <ion-col class="ion-no-padding" size="9">
+                <ion-card-subtitle style="font-size: 11px;">
+                  Status
+                </ion-card-subtitle>
+                <ion-card-subtitle color="dark" style="font-size: 12px;">
+                  {{findingItem.statusDesc}}
+                </ion-card-subtitle>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+    </ion-card-content>
+    <ion-item-divider class="ion-no-padding ion-no-margin"></ion-item-divider>
+    <ion-row style="color:black">
+      <!-- <ion-col size="6">
+          <ion-button expand="full" color="danger" fill="clear" (click)="deleteOptions(findingItem)"
+          [disabled]="  this.dataFromAuditDetailPage.status == 1002">
+            Delete
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-col> -->
+
+      <ion-col size="12">
+
+        <ion-button expand="full" fill="clear" (click)="updateFinding(findingItem)" [disabled]="this.auditStatusId==1002">
+          Update
+          <ion-icon style="margin-left:5px;" name="create-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+
+
+      <!--  <ion-col style="text-align: center;">
+          <ion-text color="dark" style="margin: 5px;">Finding Details</ion-text>
+        </ion-col> -->
+    </ion-row>
+  </ion-card>
+</ion-content>

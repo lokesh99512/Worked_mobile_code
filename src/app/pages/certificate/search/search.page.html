@@ -1,0 +1,194 @@
+<ion-header  class="header">
+  <ion-toolbar  class="toolbar">
+    <ion-title style="text-align: center;">
+      CERTIFICATE SEARCH
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-icon name="options" slot="end" class="filterIcon" style="padding-right: 5px;" (click)="searchFilter($event)">
+    </ion-icon>
+    
+  </ion-toolbar>
+  <ion-searchbar color="light" *ngIf="(searchPlaceholderText !== 'Search Certificate Issue Date') && (searchPlaceholderText !== 'Search Certificate Expiry Date')" type={{searchType}} [(ngModel)]="searchText" (ionChange)="getSearchedText($event)" placeholder={{searchPlaceholderText}}>
+
+  </ion-searchbar>
+  <!-- added by archana for jira ID-MOBILE-382 -->
+  <div *ngIf="(searchPlaceholderText === 'Search Certificate Issue Date') || (searchPlaceholderText === 'Search Certificate Expiry Date')" class="custom-field4">
+    <input [placeholder]="searchPlaceholderText" matInput [(ngModel)]="selectedDate" [matDatepicker]="basicDatepicker"
+      readonly (focus)="basicDatepicker.open()" (click)="basicDatepicker.open()" (dateChange)="getSearchedText($event)">
+    <mat-datepicker-toggle matSuffix [for]="basicDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #basicDatepicker>
+      <mat-datepicker-actions>
+        <button mat-button matDatepickerCancel (click)="DateClear($event)" color="secondary">Clear</button>
+        <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+      </mat-datepicker-actions>
+    </mat-datepicker>
+  </div>
+
+  <ion-select [interfaceOptions]="customPopoverOptions" mode="md"
+    interface="popover" #mySelect  (ionChange)="selectedCategoryType($event)" class="filterOption" >
+
+    <ion-select-option *ngFor="let option of searchCertificateCategoryOptions;" >
+      {{option}}
+      
+    </ion-select-option>
+   
+  </ion-select>
+<!--modified by lokesh for jira_id(459)-->
+  <ion-segment (ionChange)="segmentChanged($event)" color="danger" scrollable  [(ngModel)]="selectedSegment" mode="md">
+    <ion-segment-button [value]="item" *ngFor="let item of segmentList;let i = index"
+    (click)="segmentSelected(item,i)">
+
+    <ion-label style="color: white;">{{i==0?item:item+' Audit'}}</ion-label>
+  </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content class="content">
+  <div text-center style="text-align: center;">
+    <ion-chip color="primary" >
+        <ion-label style="font-weight: bold;" color="dark" >{{this.tempArray[0]=='without'?0:tempArray.length}} {{tempArray.length>1?'Certificates':"Certificate"}} Found</ion-label><!--modified by lokesh for jira_id(915)-->
+    </ion-chip>
+  </div>
+  <ion-slides #slide (ionSlideDidChange)="ionSlideDidChange($event)" >
+    <ion-slide *ngFor="let item of slideList" >
+  <div *ngIf="checkCertificateWithAudit==true"><!--modified by lokesh for jira_id(459)-->
+    <ion-card style="border-radius: 5px;background: white;" mode="ios" *ngFor="let certItem of tempArray" >
+      <div style="border-radius: 5px;background: white;height: 1000px;width: 500px; " mode="ios" *ngIf="this.tempArray[0]=='without'">
+        <ion-card-header >
+          <ion-card-title>
+          </ion-card-title>
+        </ion-card-header>
+      </div>
+      <div  *ngIf="this.tempArray[0]!='without'">
+        
+      <ion-card-header>
+      <ion-card-title style="text-align: start">
+       {{certItem.certificateNo}}
+      </ion-card-title>
+      <ion-card-subtitle style="text-align: start;">
+        {{certItem.vesselName}}
+      </ion-card-subtitle>
+    
+      <br>
+      <ion-grid class="ion-no-padding ">
+        <ion-row>
+          <ion-col size="4">
+            <ion-card-subtitle style="font-size: 10px;text-align: start;">
+              CERTIFICATE <br>ISSUE DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" style="text-align: start">
+              {{certItem.certIssueDate | date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" style="visibility: hidden;">
+            <ion-card-subtitle style="font-size: 10px;">
+              CERT STATUS
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" >
+              {{certItem.certifStatus}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" >
+            <ion-card-subtitle style="font-size: 10px ;text-align: end">
+              CERTIFICATE <br>EXPIRE DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" style="text-align: end">
+              {{certItem.certExpireDate | date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    
+      <!-- <ion-item-divider class="ion-no-padding"></ion-item-divider> -->
+      <hr>
+      <ion-row>
+
+        <ion-col size="6" align="left">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="primary" (click)="presentModal(certItem)">More Info</ion-button>
+        </ion-col>
+        <ion-col size="6" align="right">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="success" (click)="$event.stopPropagation();" (click)="certificateModal(certItem)">Details</ion-button>
+        </ion-col>
+
+      </ion-row>
+
+    </ion-card-header>
+      </div>
+  </ion-card>
+  </div>
+  <div *ngIf="checkCertificateWithAudit!=true"><!--modified by lokesh for jira_id(459)-->
+    <ion-card style="border-radius: 5px;background: white;" mode="ios" *ngFor="let certItem of tempArray" style="width: 750px;">
+      <div style="border-radius: 5px;background: white;height: 1000px;width: 500px; " mode="ios" *ngIf="this.tempArray[0]=='without'">
+        <ion-card-header >
+          <ion-card-title>
+          </ion-card-title>
+        </ion-card-header>
+      </div>
+      <div  *ngIf="this.tempArray[0]!='without'">
+        
+      <ion-card-header>
+      <ion-card-title style="text-align: start">
+       {{certItem.certificateNo}}
+      </ion-card-title>
+      <ion-card-subtitle style="text-align: start;">
+        {{certItem.vesselName}}
+      </ion-card-subtitle>
+    
+      <br>
+      <ion-grid class="ion-no-padding ">
+        <ion-row>
+          <ion-col size="4">
+            <ion-card-subtitle style="font-size: 10px;text-align: start;">
+              CERT ISSUE DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" style="text-align: start">
+              {{certItem.certIssueDate | date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" style="visibility: hidden;">
+            <ion-card-subtitle style="font-size: 10px;">
+              CERT STATUS
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" >
+              {{certItem.certifStatus}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" >
+            <ion-card-subtitle style="font-size: 10px ;text-align: end">
+              CERT EXPIRE DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" style="text-align: end">
+              {{certItem.certExpireDate | date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    
+      <!-- <ion-item-divider class="ion-no-padding"></ion-item-divider> -->
+      <hr>
+      <ion-row>
+
+        <ion-col size="6" align="left">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="primary" (click)="presentModal(certItem)">More Info</ion-button>
+        </ion-col>
+        <ion-col size="6" align="right">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="success" (click)="$event.stopPropagation();" (click)="certificateModal(certItem)">Details</ion-button>
+        </ion-col>
+
+      </ion-row>
+
+    </ion-card-header>
+      </div>
+  </ion-card>
+  </div>
+    </ion-slide>
+  </ion-slides>
+ 
+
+</ion-content>

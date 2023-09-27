@@ -1,0 +1,79 @@
+<ion-app>
+  <ion-split-pane contentId="main-content" when="(min-width: 2000px)">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>          
+        <ion-item-divider >
+          <ion-grid>
+            <ion-row>
+              <ion-col size="1">
+                <ion-avatar>
+                  <img src="https://seeklogo.com/images/S/seal-of-the-marshall-islands-logo-22ADD270E3-seeklogo.com.png">
+                </ion-avatar>
+              </ion-col>
+              <ion-col size="11" >
+                <h1 class="vertical-align"> MARSHALL ISLANDS</h1>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item-divider>
+
+        <ion-item-divider >
+          <ion-list id="inbox-list">
+            <ion-list-header>{{displayName}}</ion-list-header>
+            <ion-list-header style="width: 70vw;word-wrap: break-word; font-size: 12px;">{{userName}}</ion-list-header><!--font size is modified by lokesh for jira_id(740)-->
+          </ion-list>
+        </ion-item-divider>
+
+        <ion-list id="labels-list">
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages;">
+            <ion-item (click)="selectedIndex = p.id" routerDirection="root" [routerLink]="[p.url]" lines="none"
+              detail="false" [class.selected]="selectedIndex == p.id">
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+
+        <ion-list id="labels-list">
+          <!-- added by archana for jira Id-MOBILE-773 -->
+          <ion-list-header>Audit / Inspection / Review</ion-list-header>
+
+          <ion-menu-toggle auto-hide="false"  *ngFor="let q of auditPages;">
+            <ion-item (click)="selectedIndex = q.id" routerDirection="root" [routerLink]="[q.url]" lines="none"
+              detail="false" [class.selected]="selectedIndex == q.id">
+              <ion-icon slot="start" [ios]="q.icon + '-outline'" [md]="q.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ q.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+
+        <ion-list id="labels-list">
+          <ion-list-header>Certificate</ion-list-header>
+
+          <ion-menu-toggle auto-hide="false" *ngFor="let r of certifictePages;">
+            <ion-item (click)="selectedIndex = r.id" routerDirection="root" [routerLink]="[r.url]" lines="none"
+              detail="false" [class.selected]="selectedIndex == r.id">
+              <ion-icon slot="start" [ios]="r.icon + '-outline'" [md]="r.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ r.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+
+        <ion-list id="labels-list">
+          <ion-list-header>Settings</ion-list-header>
+          <!-- removed by archana for jira Id-MOBILE-773 -->
+          <!-- <ion-item lines="none">
+            <ion-icon slot="start" ios="color-palette-outline" md="color-palette-sharp"></ion-icon>
+            <ion-label>Theme</ion-label>
+          </ion-item> -->   
+          <ion-item lines="none" (click)="logout()">
+            <ion-icon slot="start" ios="exit-outline" md="exit-sharp"></ion-icon>
+            <ion-label>Logout</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

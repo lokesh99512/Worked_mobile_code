@@ -1,0 +1,41 @@
+.header{
+    background:linear-gradient(90deg, #350536,#0c8390);
+    // background: #3d5cd1;
+   // background: linear-gradient(to left, #21E5E2, #0B7BC9);
+}
+.filterIcon{
+    zoom: 1.5;
+}
+
+.content{
+    background: #F7F8FC;
+}
+
+.filterOption{
+    display: none;
+}
+
+.label{
+   vertical-align: top;
+}
+
+.cardButton{
+    height: 27px;
+    width: 75px;
+}
+
+// ion-card{
+//     display: flex;
+//     flex-direction: column;
+//     width: 100% !important;
+//     margin: 0 !important;
+//   }
+
+// .popover-wrapper .popover-content{
+//     position: relative !important;
+//     margin: 0 auto !important;
+//     left: auto !important;
+//     top: auto !important;
+// }
+
+

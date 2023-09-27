@@ -1,0 +1,183 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+
+@font-face {
+  font-family: 'NunitoSans'; //This is what we are going to call
+  src: url('../src/assets/fonts/Nunito_Sans/NunitoSans-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'SFProRegular'; //This is what we are going to call
+  src: url('../src/assets/fonts/SFProRegular.ttf');
+}
+
+body {
+  font-family: SFProRegular !important;
+}
+
+.header {
+
+  // background: #3d5cd1;
+  // background:linear-gradient(-90deg, #aa48eb, #7063f5);
+  background: linear-gradient(90deg, #350536, #0c8390);
+  // background: linear-gradient(to left, #21E5E2, #0B7BC9);
+}
+
+.add-new-finding-modal {
+  --height: 80%;                 //changed by @archana for jira id- MOBILE-646
+  align-items: center;          //Changed by @Ramya for jira id - Mobile-404
+  padding: 20px;        
+}
+.add-new-login-modal{
+  --height: 0%;                //added by lokesh for jira_id(745)
+  align-items: center;          
+  padding: 20px;   
+
+}
+
+/* @font-face {
+    font-family: 'Open Sans';
+    src: url('./assets/fonts/OpenSans-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Open Sans';
+    src: url('./assets/fonts/OpenSans-SemiBold.ttf');
+    font-weight: 600;
+    font-style: bold;
+  }
+
+  @font-face {
+    font-family: 'Open Sans';
+    src: url('./assets/fonts/OpenSans-Bold.ttf');
+    font-weight: 700;
+    font-style: bold;
+  }
+
+  @font-face {
+    font-family: 'Open Sans';
+    src: url('./assets/fonts/OpenSans-Italic.ttf');
+    font-weight: 300;
+    font-style: italic;
+  } */
+
+
+:root {
+
+  .dark-theme {
+    --ion-background-color: #121212;
+    --ion-background-color-rgb: 18, 18, 18;
+
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+
+    --ion-border-color: #222222;
+
+    --ion-color-step-50: #1e1e1e;
+    --ion-color-step-100: #2a2a2a;
+    --ion-color-step-150: #363636;
+    --ion-color-step-200: #414141;
+    --ion-color-step-250: #4d4d4d;
+    --ion-color-step-300: #595959;
+    --ion-color-step-350: #656565;
+    --ion-color-step-400: #717171;
+    --ion-color-step-450: #7d7d7d;
+    --ion-color-step-500: #898989;
+    --ion-color-step-550: #949494;
+    --ion-color-step-600: #a0a0a0;
+    --ion-color-step-650: #acacac;
+    --ion-color-step-700: #b8b8b8;
+    --ion-color-step-750: #c4c4c4;
+    --ion-color-step-800: #d0d0d0;
+    --ion-color-step-850: #dbdbdb;
+    --ion-color-step-900: #e7e7e7;
+    --ion-color-step-950: #f3f3f3;
+
+    --ion-item-background: #1e1e1e;
+
+    --ion-toolbar-background: #1f1f1f;
+
+    --ion-tab-bar-background: #1f1f1f;
+
+    --ion-card-background: #1e1e1e;
+  }
+   /**added by archana for jira-ID-MOBILE-893 start */
+    @media only screen and (min-width: 768px) and (min-height: 768px) {
+      .sc-ion-modal-md-h {
+        --width: 600px;
+        --height: 700px;
+      }
+    }
+    /**added by archana for jira-ID-MOBILE-893 end */
+}
+.ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button {             //added by archana for jira ID-MOBILE-818
+  width: 35px !important;
+}
+/**added by lokesh for jira_id(745) START HERE*/
+.my-custom-alert .alert-wrapper {
+  min-width: 300px !important;
+  button.alertButton{
+    font-weight: bold !important;
+  }
+  }
+  /**added by lokesh for jira_id(745) END HERE*/
+/** added by archana for jira id-MOBILE-519 start*/
+.alertCancel{
+    button.alertButton{
+      font-weight: bold !important;
+    }
+ }
+ /** added by archana for jira id-MOBILE-519 end*/
+ .alertCancel1{
+  border-bottom-style: solid;
+  .alert-message{
+  font-size: 20px;
+  white-space: pre;
+  }
+  .alert-wrapper {
+    background-color: white;
+    max-width: 500px;
+    height: auto;
+    border-right: 10px solid white;  // changed by archana for jira id-MOBILE-736
+    
+    .alert-head {
+        h2 {
+          border-bottom-style: solid;
+        }
+    }
+  }
+  .alertButtonRefresh{
+  background: linear-gradient(90deg, #350536, #0c8390);
+  border:none;
+  color: white;
+  border-right: 10px solid;
+  border-left: 10px solid;
+  border-bottom: 10px solid;
+  }
+}

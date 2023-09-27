@@ -1,0 +1,857 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="goBack()" style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="margin-right: 40px;text-align: center;">
+      {{auditTypeId == appConstant.DMLC_TYPE_ID ? 'Review Note Details' : 'Finding Details'}}</ion-title>
+    <ion-icon name="save" slot="end" class="filterIcon" style="padding-right: 8px;" (click)="save()">
+    </ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-card style="background-color: #5f9ea0;padding-top: 8px;padding-bottom: 8px;" mode="ios">
+    <ion-row style="color: white;">
+      <ion-col offset="1" size="5">CATEGORY</ion-col>
+      <ion-col size="1">:</ion-col>
+      <ion-col size="5">{{categoryDesc}}</ion-col>
+    </ion-row>
+    <ion-row style="color: white;">
+      <ion-col offset="1" size="5">SERIAL NUMBER </ion-col>
+      <ion-col size="1">:</ion-col>
+      <ion-col size="5">{{findingInfo.serialNo}}</ion-col>
+    </ion-row>
+    <ion-row style="color: white;">
+      <ion-col offset="1" size="5">{{this.dataFromPrevFindingListScreen.auditTypeDesc}} CODE </ion-col><!--modified by lokesh for jira_id(772)-->
+      <ion-col size="1">:</ion-col>
+      <ion-col size="5">{{findingInfo.auditCode}}</ion-col>
+    </ion-row>
+  </ion-card>
+
+  <!-- Opened status block -->
+  <ion-card *ngIf="isStatusOpened" style="border-radius: 1px;background: white;" mode="ios">
+    <ion-card-header>
+      <ion-grid class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : Open</ion-card-subtitle>
+        </ion-item>
+      </ion-grid>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Status Date
+            </ion-label>
+            <mat-form-field class="dateinput" (click)="openStatusBlockStatusDate.open()">
+              <ion-input>
+                <input matInput readonly [min]='minStatusDate' [max]='maxStatusDate'
+                  [matDatepicker]="openStatusBlockStatusDate" mode="ios" [(ngModel)]="openStatusBlock.statusDate"
+                  (dateChange)="openStatusDateChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="openStatusBlockStatusDate"></mat-datepicker-toggle>
+              <!-- "openStatusBlock.updateFlag==0" added by archana for jira-ID-MOBILE-720 -->
+              <mat-datepicker [touchUi]="isMobile" #openStatusBlockStatusDate
+                [disabled]="isOpenStatusStatusDateDisabled || disableWholeOpenStatusBlock || openStatusBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="openStatusBlockStatusDateClear($event)"
+                    color="secondary">Clear</button>
+                     <!--/* added by lokesh for jira_id(587)-->
+                  <button mat-raised-button color="primary" (click)="nextActionEmpty('open')" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Next Action</ion-label>
+            <ionic-selectable item-content [items]="findingStatusList" [canSearch]="true"
+              [disabled]="!openStatusBlock.statusDate||disableWholeOpenStatusBlock || openStatusBlock.updateFlag==0"
+              [(ngModel)]="openStatusBlock.nextActionDesc" (onChange)="NxtActionChange($event,'open')"
+              [disabledItems]="nxtActionDisableArrayOfOpenStatus" closeButtonSlot="end">
+              <ng-template ionicSelectableTitleTemplate>
+                Next Action
+              </ng-template>
+            </ionic-selectable>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+
+          <ion-item>
+            <ion-label position="stacked">Due Date</ion-label>
+            <mat-form-field class="dateinput" (click)="openStatusBlockDueDate.open()" floatLabel=never>
+              <ion-input>
+                <input [placeholder]="openStatusPlaceHolder" matInput readonly [min]='minDueDate'
+                  [max]='openStatusMaxDueDate' [matDatepicker]="openStatusBlockDueDate" mode="ios"
+                  [(ngModel)]="openStatusBlock.dueDate" (dateChange)="openDueDateChange($event)">
+              </ion-input>
+              <!--  <ion-input>
+                <input matInput readonly mode="ios" [(ngModel)]="openStatusBlock.dueDate">
+              </ion-input> -->
+              <mat-datepicker-toggle matSuffix [for]="openStatusBlockDueDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #openStatusBlockDueDate
+                [disabled]="isOpenStatusDueDateDisabled || disableWholeOpenStatusBlock || openStatusBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="openStatusBlockDueDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- <ion-item-divider style="margin-top: 16px;">
+      <ion-card-subtitle>Attachments</ion-card-subtitle>
+       
+    </ion-item-divider> -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="stacked">Description</ion-label>
+          <ion-textarea  *ngIf="!this.isIOS"autoGrow='true' [(ngModel)]="openStatusBlock.description" type='text' custom-maxlength [charMaxLength]="2500" (ionChange)="descriptionMaxLengthValidation(openStatusBlock.description)"
+            [disabled]="isOpenStatusDescriptionDisabled || disableWholeOpenStatusBlock || openStatusBlock.updateFlag==0">
+          </ion-textarea><!--added by lokesh for jira_id(726)-->
+          <ion-textarea  *ngIf="this.isIOS"autoGrow='true' [(ngModel)]="openStatusBlock.description" type='text' maxlength="2501" (ionChange)="descriptionMaxLengthValidation(openStatusBlock.description)"
+            [disabled]="isOpenStatusDescriptionDisabled || disableWholeOpenStatusBlock || openStatusBlock.updateFlag==0">
+          </ion-textarea>
+        </ion-item>
+      </ion-col>
+
+    </ion-row>
+      <div class="container">
+        <ion-grid class="ion-no-margin-top">
+          <ion-item lines="none" color="light">
+            <ion-card-subtitle class="title">Attachments</ion-card-subtitle>
+            <input type="file" #fileinput style="display: none;" (change)="pickAttachmentFile($event,'open')">
+            <!-- [disabled] removed by archana for jira ID-MOBILE-716 -->
+            <ion-button (click)="fileinput.click()" slot="end" size="small" shape="round" color="primary" 
+            [disabled]="openStatusBlock.updateFlag==0" >Add New
+              <!-- [disabled] added by archana for jira ID-MOBILE-697,799 -->
+              
+            </ion-button>
+
+          </ion-item>
+        </ion-grid>
+        <ion-list *ngFor="let file of openStatusBlock.findingRptAttachs">
+          <div class="attachment-ion-item">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <!--  <ion-col size="3">
+              <ion-button color="light" fill="clear">
+                <ion-icon slot="icon-only" name="document"></ion-icon>
+              </ion-button>
+            </ion-col> -->
+                <ion-col size="9">
+                  <ion-label>
+                    <h4>{{file.fileName}}</h4>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-button (click)="downloadAttachment(file,'open');" style="color: #0ed6d8 !important" fill="clear">
+                    <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteOptions(file,'open');" color="danger" fill="clear" [disabled]="openStatusBlock.updateFlag==0">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </ion-list>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <!-- downgraded status block -->
+  <ion-card *ngIf="isStatusDowngraded" style="border-radius: 1px;background: white;" mode="ios">
+    <ion-card-header>
+      <div *ngIf="downgradedStatusBlock.updateDescription!='' || downgradedStatusBlock.updateFlag==1">
+        <ion-col size-lg="6" size-md="12" size-sm="12" size="12">
+          <ion-item class="ionIten" no-border>
+            <div class="port-field">
+              <ion-label position="stacked" color="medium">{{dataFromPrevFindingListScreen.auditTypeTitle}} Place</ion-label>
+              <mat-form-field class="example-full-width">
+                <textarea type="text" [formControl]="downGradeAuditPlace" matInput
+                  (input)="_filter($event.target.value)" [matAutocomplete]="auto"
+                  [readonly]="this.statusComplete == 1002"></textarea>
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of downGradeFilteredOptions | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <ion-text *ngIf="downgradedStatusBlock.updateDescription" color="dark">
+                {{downgradedStatusBlock.updateDescription}}
+              </ion-text>
+            </div>
+          </ion-item>
+        </ion-col>
+
+        <ion-item>
+          <ion-card-subtitle>Status : Downgraded</ion-card-subtitle>
+        </ion-item>
+
+      </div>
+      <ion-grid *ngIf="downgradedStatusBlock.updateDescription =='' && downgradedStatusBlock.updateFlag==0"
+        class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : {{categoryDesc == 'MNC'? 'DOWNGRADED' : categoryDesc == 'MF'? 'DOWNGRADED  (COMPLIANCE RESTORED)' : categoryDesc == 'SD'? 'DOWNGRADED (RECTIFIED)': '' }}</ion-card-subtitle><!--added by lokesh for jira_id(630)-->
+        </ion-item>
+      </ion-grid>
+
+    </ion-card-header>
+    <!--    <ion-card-header>
+      <ion-grid class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : Downgraded</ion-card-subtitle>
+        </ion-item>
+      </ion-grid>
+    </ion-card-header> -->
+
+    <!-- <ion-card-header>
+    <ion-item>
+      <ion-card-subtitle>Status : Downgrade</ion-card-subtitle>
+    </ion-item>
+  </ion-card-header> -->
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Status Date</ion-label>
+
+            <mat-form-field class="dateinput" (click)="downGradedStatusBlockStatusDate.open()">
+              <ion-input>
+                <input matInput readonly [min]='openStatusBlock.statusDate' [max]='maxStatusDate'
+                  [matDatepicker]="downGradedStatusBlockStatusDate" mode="ios"
+                  [(ngModel)]="downgradedStatusBlock.statusDate"
+                  (dateChange)="downGradeStatusBlockStatusDateOnChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="downGradedStatusBlockStatusDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #downGradedStatusBlockStatusDate
+                [disabled]="isDowngradedStatusStatusDateDisabled || disableWholeDownGradeStatusBlock || downgradedStatusBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="downGradedStatusBlockStatusDateClear($event)"
+                    color="secondary">Clear</button>
+                     <!--/* added by lokesh for jira_id(587)-->
+                  <button mat-raised-button color="primary" (click)="nextActionEmpty('downgrade')" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Next Action</ion-label>
+            <ionic-selectable item-content [items]="findingStatusList" [canSearch]="true"
+              [disabled]="!downgradedStatusBlock.statusDate||disableWholeDownGradeStatusBlock || downgradedStatusBlock.updateFlag==0"
+              [(ngModel)]="downgradedStatusBlock.nextActionDesc" (onChange)="NxtActionChange($event,'downgrade')"
+              [disabledItems]="nxtActionDisableArrayOfDowngradeStatus" closeButtonSlot="end">
+              <ng-template ionicSelectableTitleTemplate>
+                Next Action
+              </ng-template>
+            </ionic-selectable>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+
+          <ion-item>
+            <ion-label position="stacked">Due Date</ion-label>
+            <mat-form-field class="dateinput" (click)="downGradedStatusBlockDueDate.open()" floatLabel=never><!--added by lokesh for jira_id(632)-->
+              <ion-input><!--placeholder added by lokesh for jira_id(632)-->
+                <input matInput readonly [min]='minDueDate' [max]='downgradStatusMaxDueDate' [placeholder]="downgradeStatusPlaceHolder"
+                  [matDatepicker]="downGradedStatusBlockDueDate" mode="ios" [(ngModel)]="downgradedStatusBlock.dueDate"
+                  (dateChange)="downgradedStatusBlockDueDateChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="downgradedStatusBlockDueDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #downGradedStatusBlockDueDate
+                [disabled]="isDowngradedStatusDueDateDisabled || disableWholeDownGradeStatusBlock || downgradedStatusBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="downgradedStatusBlockDueDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Description</ion-label>
+            <ion-textarea  *ngIf="!this.isIOS" autoGrow='true' [(ngModel)]="downgradedStatusBlock.description" type='text' custom-maxlength [charMaxLength]="2500" (ionChange)="descriptionMaxLengthValidation(downgradedStatusBlock.description)"
+              [disabled]="isDowngradedStatusDescriptionDisabled || disableWholeDownGradeStatusBlock || downgradedStatusBlock.updateFlag==0">
+            </ion-textarea><!--added by lokesh for jira_id(726)-->
+            <ion-textarea  *ngIf="this.isIOS" autoGrow='true' [(ngModel)]="downgradedStatusBlock.description" type='text' maxlength="2501" (ionChange)="descriptionMaxLengthValidation(downgradedStatusBlock.description)"
+              [disabled]="isDowngradedStatusDescriptionDisabled || disableWholeDownGradeStatusBlock || downgradedStatusBlock.updateFlag==0">
+            </ion-textarea>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <div class="container">
+        <ion-grid class="ion-no-margin-top">
+          <ion-item lines="none" color="light">
+            <ion-card-subtitle class="title">Attachments</ion-card-subtitle>
+            <input type="file" #fileinput style="display: none;" (change)="pickAttachmentFile($event,'downgrade')">
+            <ion-button (click)="fileinput.click()" slot="end" size="small" shape="round" color="primary" 
+            [disabled]="downgradedStatusBlock.updateFlag==0">Add New
+            </ion-button>
+
+          </ion-item>
+        </ion-grid>
+        <ion-list *ngFor="let file of downgradedStatusBlock.findingRptAttachs">
+          <div class="attachment-ion-item" lines="none">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <!--  <ion-col size="3">
+              <ion-button color="light" fill="clear">
+                <ion-icon slot="icon-only" name="document"></ion-icon>
+              </ion-button>
+            </ion-col> -->
+                <ion-col size="9">
+                  <ion-label>
+                    <h4>{{file.fileName}}</h4>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-button (click)="downloadAttachment(file,'downgrade');" style="color: #0ed6d8 !important" fill="clear">
+                    <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteOptions(file,'downgrade');" color="danger" fill="clear" [disabled]="downgradedStatusBlock.updateFlag==0">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </ion-list>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+   <!-- added by archana for jira ID-MOBILE-761 start -->
+  <ion-card *ngIf="isStatusRestoreComplianced" style="border-radius: 1px;background: white;" mode="ios">
+   
+    <ion-card-header>
+      <div *ngIf="RestoreCompliancedStausBlock.updateDescription!='' || RestoreCompliancedStausBlock.updateFlag==1">
+        <ion-col size-lg="6" size-md="12" size-sm="12" size="12">
+          <ion-item class="ionIten" no-border>
+            <div class="port-field">
+              <ion-label position="stacked" color="medium">{{dataFromPrevFindingListScreen.auditTypeTitle}} Place</ion-label>
+              <mat-form-field class="example-full-width"> 
+                <textarea type="text" [formControl]="complianceRestoredAuditPlace" matInput [(ngModel)]='RestoreCompliancedStausBlock.auditPlace' 
+                  (input)="_filter($event.target.value)" [matAutocomplete]="auto"
+                  [readonly]="this.statusComplete == 1002"></textarea> 
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of complianceRestoredFilterOptions | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field><br><br>
+              <ion-text *ngIf="RestoreCompliancedStausBlock.updateDescription" color="dark">
+                {{RestoreCompliancedStausBlock.updateDescription}}
+              </ion-text>
+            </div>
+          </ion-item>
+        </ion-col>
+
+        <ion-item>
+          <ion-card-subtitle>Status : RESTORE COMPLIANCE</ion-card-subtitle>
+        </ion-item>
+
+      </div>
+      <ion-grid *ngIf="RestoreCompliancedStausBlock.updateDescription =='' && RestoreCompliancedStausBlock.updateFlag==0"
+        class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : COMPLIANCE RESTORED</ion-card-subtitle>
+        </ion-item>
+      </ion-grid>
+
+    </ion-card-header>
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Status Date</ion-label>
+            <mat-form-field class="dateinput" (click)="RestoreCompliancedStausBlockStatusDate.open()">
+              <ion-input>
+                <input matInput readonly [min]='planAcceptedBlockMinStatusDate' [max]='maxStatusDate'
+                  [matDatepicker]="planAcceptedStausBlockStatusDate" mode="ios"
+                  [(ngModel)]="RestoreCompliancedStausBlock.statusDate"
+                  (dateChange)="planAcceptedStausBlockStatusDateOnChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="planAcceptedStausBlockStatusDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #planAcceptedStausBlockStatusDate
+                [disabled]="isPlanAcceptedStatusStatusDateDisabled || disableWholePlanAcceptedStatusBlock || RestoreCompliancedStausBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="planAcceptedStausBlockStatusDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" (click)="nextActionEmpty('planAccept')"  matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Next Action</ion-label>
+            <ionic-selectable item-content [items]="findingStatusList" [canSearch]="true"
+              [disabled]="!RestoreCompliancedStausBlock.statusDate ||disableWholePlanAcceptedStatusBlock || RestoreCompliancedStausBlock.updateFlag==0"
+              [(ngModel)]="RestoreCompliancedStausBlock.nextActionDesc" (onChange)="NxtActionChange($event,'restoreCompliance')"
+              [disabledItems]="nxtActionDisableArrayOfPlanAcceptedStatus" closeButtonSlot="end">
+              <ng-template ionicSelectableTitleTemplate>
+                Next Action
+              </ng-template>
+            </ionic-selectable>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+
+          <ion-item>
+            <ion-label position="stacked">Due Date</ion-label>
+            <mat-form-field class="dateinput" (click)="planAcceptedStausBlockDueDate.open()" floatLabel=never>
+              <ion-input>
+                <!--  [placeholder]="restoreCompliancedPlaceHolder" changed by archana for jira-ID-MOBILE-762 -->
+                <input [placeholder]="restoreCompliancedPlaceHolder" matInput readonly [min]='minDueDate'
+                  [max]='planAcceptedStatusMaxDueDate' [matDatepicker]="planAcceptedStausBlockDueDate" mode="ios"
+                  [(ngModel)]="RestoreCompliancedStausBlock.dueDate"
+                  (dateChange)="planAcceptedStausBlockDueDateChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="planAcceptedStausBlockDueDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #planAcceptedStausBlockDueDate
+                [disabled]="isPlanAcceptedStatusDueDateDisabled || isplanAcceptedStausDueDateDisabled || disableWholePlanAcceptedStatusBlock || RestoreCompliancedStausBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="planAcceptedStausBlockDueDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Description</ion-label>
+            <ion-textarea  *ngIf="!this.isIOS" autoGrow='true' [(ngModel)]="RestoreCompliancedStausBlock.description" type='text' custom-maxlength [charMaxLength]="2500" (ionChange)="descriptionMaxLengthValidation(RestoreCompliancedStausBlock.description)"
+              [disabled]="isPlanAcceptedStatusDescriptionDisabled || disableWholePlanAcceptedStatusBlock || RestoreCompliancedStausBlock.updateFlag==0">
+            </ion-textarea><!--added by lokesh for jira_id(726)-->
+            <ion-textarea  *ngIf="this.isIOS" autoGrow='true' [(ngModel)]="RestoreCompliancedStausBlock.description" type='text' maxlength="2501" (ionChange)="descriptionMaxLengthValidation(RestoreCompliancedStausBlock.description)"
+            [disabled]="isPlanAcceptedStatusDescriptionDisabled || disableWholePlanAcceptedStatusBlock || RestoreCompliancedStausBlock.updateFlag==0">
+          </ion-textarea>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <div class="container">
+        <ion-grid class="ion-no-margin-top">
+          <ion-item lines="none" color="light">
+            <ion-card-subtitle class="title">Attachments</ion-card-subtitle>
+            <input type="file" #fileinput style="display: none;" (change)="pickAttachmentFile($event,'restoreCompliance')">
+            <ion-button (click)="fileinput.click()" slot="end" size="small" shape="round" color="primary" [disabled]="RestoreCompliancedStausBlock.updateFlag==0">Add New
+            </ion-button>
+
+          </ion-item>
+        </ion-grid>
+        <ion-list *ngFor="let file of RestoreCompliancedStausBlock.findingRptAttachs">
+          <div class="attachment-ion-item" lines="none">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+              
+                <ion-col size="9">
+                  <ion-label>
+                    <h4>{{file.fileName}}</h4>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-button (click)="downloadAttachment(file,'restoreCompliance');" style="color: #0ed6d8 !important" fill="clear">
+                    <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteOptions(file,'restoreCompliance');" color="danger" fill="clear" [disabled]="RestoreCompliancedStausBlock.updateFlag==0">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </ion-list>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+ <!-- added by archana for jira ID-MOBILE-761 end -->
+  <!-- plan accepted status block -->
+  <ion-card *ngIf="isStatusPlanAccepted" style="border-radius: 1px;background: white;" mode="ios">
+    <!--  <ion-card-header>
+      <ion-item>
+        <ion-card-subtitle>Status : Plan Accepted</ion-card-subtitle>
+      </ion-item>
+    </ion-card-header> -->
+    <ion-card-header>
+      <div *ngIf="planAcceptedStausBlock.updateDescription!='' || planAcceptedStausBlock.updateFlag==1">
+        <ion-col size-lg="6" size-md="12" size-sm="12" size="12">
+          <ion-item class="ionIten" no-border>
+            <div class="port-field">
+              <ion-label position="stacked" color="medium">{{dataFromPrevFindingListScreen.auditTypeTitle}} Place</ion-label><!--added by lokesh for jira_id=652-->
+              <mat-form-field class="example-full-width"> 
+                <textarea type="text" [formControl]="planacceptAuditPlace" matInput [(ngModel)]='planAcceptedStausBlock.auditPlace' 
+                  (input)="_filter($event.target.value)" [matAutocomplete]="auto"
+                  [readonly]="this.statusComplete == 1002"></textarea>  <!--added by lokesh for jira_id=634-->
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of planacceptFilteredOptions | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field><br><br><!--modified by lokesh for jira_id(685)-->
+              <ion-text *ngIf="planAcceptedStausBlock.updateDescription" color="dark">
+                {{planAcceptedStausBlock.updateDescription}}
+              </ion-text>
+            </div>
+          </ion-item>
+        </ion-col>
+
+        <ion-item>
+          <ion-card-subtitle>Status : Plan Accepted</ion-card-subtitle>
+        </ion-item>
+
+      </div>
+      <ion-grid *ngIf="planAcceptedStausBlock.updateDescription =='' && planAcceptedStausBlock.updateFlag==0"
+        class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : Plan Accepted</ion-card-subtitle>
+        </ion-item>
+      </ion-grid>
+
+    </ion-card-header>
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Status Date</ion-label>
+            <mat-form-field class="dateinput" (click)="planAcceptedStausBlockStatusDate.open()">
+              <ion-input>
+                <input matInput readonly [min]='minStatusDate' [max]='maxStatusDate'
+                  [matDatepicker]="planAcceptedStausBlockStatusDate" mode="ios"
+                  [(ngModel)]="planAcceptedStausBlock.statusDate"
+                  (dateChange)="planAcceptedStausBlockStatusDateOnChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="planAcceptedStausBlockStatusDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #planAcceptedStausBlockStatusDate
+                [disabled]="isPlanAcceptedStatusStatusDateDisabled || disableWholePlanAcceptedStatusBlock || planAcceptedStausBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="planAcceptedStausBlockStatusDateClear($event)"
+                    color="secondary">Clear</button><!--/* added by lokesh for jira_id(587)-->
+                  <button mat-raised-button color="primary" (click)="nextActionEmpty('planAccept')"  matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Next Action</ion-label>
+            <ionic-selectable item-content [items]="findingStatusList" [canSearch]="true"
+              [disabled]="!planAcceptedStausBlock.statusDate ||disableWholePlanAcceptedStatusBlock || planAcceptedStausBlock.updateFlag==0"
+              [(ngModel)]="planAcceptedStausBlock.nextActionDesc" (onChange)="NxtActionChange($event,'planAccept')"
+              [disabledItems]="nxtActionDisableArrayOfPlanAcceptedStatus" closeButtonSlot="end">
+              <ng-template ionicSelectableTitleTemplate>
+                Next Action
+              </ng-template>
+            </ionic-selectable>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+
+          <ion-item>
+            <ion-label position="stacked">Due Date</ion-label>
+            <mat-form-field class="dateinput" (click)="planAcceptedStausBlockDueDate.open()" floatLabel=never>
+              <ion-input>
+                <input [placeholder]="planAcceptedPlaceholder" matInput readonly [min]='minDueDate'
+                  [max]='planAcceptedStatusMaxDueDate' [matDatepicker]="planAcceptedStausBlockDueDate" mode="ios"
+                  [(ngModel)]="planAcceptedStausBlock.dueDate"
+                  (dateChange)="planAcceptedStausBlockDueDateChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="planAcceptedStausBlockDueDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #planAcceptedStausBlockDueDate
+                [disabled]="isPlanAcceptedStatusDueDateDisabled || isplanAcceptedStausDueDateDisabled || disableWholePlanAcceptedStatusBlock || planAcceptedStausBlock.updateFlag==0">
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="planAcceptedStausBlockDueDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item><!--alignment changed by lokesh-->
+            <ion-label position="stacked">Description</ion-label>
+            <ion-textarea  *ngIf="!this.isIOS" autoGrow='true' [(ngModel)]="planAcceptedStausBlock.description" type='text' custom-maxlength [charMaxLength]="2500" (ionChange)="descriptionMaxLengthValidation(planAcceptedStausBlock.description)"
+              [disabled]="isPlanAcceptedStatusDescriptionDisabled || disableWholePlanAcceptedStatusBlock || planAcceptedStausBlock.updateFlag==0">
+            </ion-textarea><!--added by lokesh for jira_id(726)-->
+            <ion-textarea  *ngIf="this.isIOS" autoGrow='true' [(ngModel)]="planAcceptedStausBlock.description" type='text' maxlength="2501" (ionChange)="descriptionMaxLengthValidation(planAcceptedStausBlock.description)"
+            [disabled]="isPlanAcceptedStatusDescriptionDisabled || disableWholePlanAcceptedStatusBlock || planAcceptedStausBlock.updateFlag==0">
+          </ion-textarea>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <div class="container">
+        <ion-grid class="ion-no-margin-top">
+          <ion-item lines="none" color="light">
+            <ion-card-subtitle class="title">Attachments</ion-card-subtitle>
+            <input type="file" #fileinput style="display: none;" (change)="pickAttachmentFile($event,'planAccept')">
+            <ion-button (click)="fileinput.click()" slot="end" size="small" shape="round" color="primary" 
+            [disabled]="planAcceptedStausBlock.updateFlag==0">Add New
+            </ion-button>
+
+          </ion-item>
+        </ion-grid>
+        <ion-list *ngFor="let file of planAcceptedStausBlock.findingRptAttachs">
+          <div class="attachment-ion-item" lines="none">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <!--  <ion-col size="3">
+              <ion-button color="light" fill="clear">
+                <ion-icon slot="icon-only" name="document"></ion-icon>
+              </ion-button>
+            </ion-col> -->
+                <ion-col size="9">
+                  <ion-label>
+                    <h4>{{file.fileName}}</h4>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-button (click)="downloadAttachment(file,'planAccept');" style="color: #0ed6d8 !important" fill="clear">
+                    <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteOptions(file,'planAccept');" color="danger" fill="clear" [disabled]="planAcceptedStausBlock.updateFlag==0">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </ion-list>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
+  <!-- verified & closed status block -->
+  <ion-card *ngIf="isStatusVerifiedAndClosed" style="border-radius: 1px;background: white;" mode="ios">
+    <!--  <ion-card-header>
+      <ion-item>
+        <ion-card-subtitle>Status : Verify & Close</ion-card-subtitle>
+      </ion-item>
+    </ion-card-header> -->
+    <ion-card-header>
+      <div *ngIf="verifiedAndClosedStausBlock.updateDescription!='' || verifiedAndClosedStausBlock.updateFlag==1">
+        <ion-col size-lg="6" size-md="12" size-sm="12" size="12">
+          <ion-item class="ionIten" no-border>
+            <div class="port-field">
+              <ion-label position="stacked" color="medium">{{dataFromPrevFindingListScreen.auditTypeTitle}} Place</ion-label><!--added by lokesh for jira_id=652-->
+              <mat-form-field class="example-full-width"> <!--// added by lokesh for jira_id(634)-->
+                <textarea type="text" [(ngModel)]="verifiedAndClosedStausBlock.auditPlace" [formControl]="verifyCloseAuditPlace" matInput
+                  (input)="_filter($event.target.value)" [matAutocomplete]="auto"
+                  [readonly]="this.statusComplete == 1002"></textarea>
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of verifyCloseFilteredOptions | async" [value]="option"><!--modified by lokesh for jira_id(788)-->
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+             <!--added by lokesh for check box and binding data JIRA-ID 635-->
+            </mat-form-field><br><br><!--modified by lokesh for jira_id(685)-->
+            <ion-text *ngIf="verifiedAndClosedStausBlock.updateDescription" color="dark">
+              {{verifiedAndClosedStausBlock.updateDescription}}<br>
+         <!-- added by archana for jira id MOBILE-704 start -->
+            <div class="item-background-color"  *ngIf="this.enableCheck == true || verifiedAndClosedStausBlock.checkboxUpdate == 1">
+            <input  type="checkbox"  slot="start" class="checkbox-square" name="vehicle1" [checked]="verifiedAndClosedStausBlock.checkboxUpdate == 1" (click)='textBoxRequir($event)' mode="md" >
+            <label class="checkboxes">Complete {{this.auditSubtype+' '+ this.dataFromPrevFindingListScreen.auditTypeTitle}}</label><!--modified by lokesh for jira_id(68)-->
+          </div>
+            <!-- <ion-item class="item-background-color"  *ngIf="this.enableCheck == true || verifiedAndClosedStausBlock.checkboxUpdate == 1">
+          <ion-checkbox slot="start" class="checkbox-square" [(ngModel)]="masterCheck"  (click)='textBoxRequir($event)' mode="md" ></ion-checkbox>
+          {{checkboxData}}
+          </ion-item > -->
+          
+           <!-- added by archana for jira id MOBILE-704 end -->
+            </ion-text>
+             <!--added by lokesh for check box and binding data JIRA-ID 635-->
+            </div>
+          </ion-item>
+        </ion-col>
+
+        <ion-item>
+          <ion-card-subtitle>Status : Verify & Close</ion-card-subtitle>
+        </ion-item>
+
+      </div>
+      <ion-grid
+        *ngIf="verifiedAndClosedStausBlock.updateDescription =='' && verifiedAndClosedStausBlock.updateFlag==0"
+        class="ion-no-margin-top">
+        <ion-item lines="none" color="light">
+          <ion-card-subtitle class="title">Status : Verify & Close</ion-card-subtitle>
+        </ion-item>
+      </ion-grid>
+
+    </ion-card-header>
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Status Date</ion-label>
+            <mat-form-field class="dateinput" (click)="verifiedAndClosedStausBlockStatusDate.open()">
+              <ion-input>
+                <!-- [min]="auditTypeId == appConstant.DMLC_TYPE_ID ? openStatusBlock.statusDate : planAcceptedStausBlock.statusDate" -->
+                <input matInput readonly
+                [min]="minStatusDate"
+                  [max]='maxStatusDate'
+                   [matDatepicker]="verifiedAndClosedStausBlockStatusDate" mode="ios"
+                  [(ngModel)]="verifiedAndClosedStausBlock.statusDate"
+                  (dateChange)="verifiedAndClosedStausBlockStatusDateOnChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="verifiedAndClosedStausBlockStatusDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #verifiedAndClosedStausBlockStatusDate
+                [disabled]="disableWholeVerifyCloseStatusBlock || verifiedAndClosedStausBlock.updateFlag==0">
+                <!-- || this.dataFromPrevFindingListScreen.auditInfo.status == 1002"> -->
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="verifiedAndClosedStausBlockStatusDateClear($event)"
+                    color="secondary">Clear</button>
+                    <!--/* added by lokesh for jira_id(587)-->
+                  <button mat-raised-button color="primary" (click)="nextActionEmpty('verifyClose')" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Next Action</ion-label>
+            <!-- || this.dataFromPrevFindingListScreen.auditInfo.status == 1002"> -->
+            <ionic-selectable item-content [items]="findingStatusList" [canSearch]="true"
+              [disabled]="!verifiedAndClosedStausBlock.statusDate ||disableWholeVerifyCloseStatusBlock || verifiedAndClosedStausBlock.updateFlag==0"
+              [(ngModel)]="verifiedAndClosedStausBlock.nextActionDesc"
+              (onChange)="NxtActionChange($event,'verifyClose')"
+              [disabledItems]="nxtActionDisableArrayOfVerifyCloseStatus" closeButtonSlot="end">
+              <ng-template ionicSelectableTitleTemplate>
+                Next Action
+              </ng-template>
+            </ionic-selectable>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+
+          <ion-item>
+            <ion-label position="stacked">Due Date</ion-label>
+            <mat-form-field class="dateinput" (click)="verifiedAndClosedStausBlockDueDate.open()" floatLabel=never>
+              <ion-input>
+
+                <input [placeholder]="verifiedClosedStatusPlaceHolder" matInput readonly [min]='minDueDate'
+                  [max]='maxDueDate' [matDatepicker]="verifiedAndClosedStausBlockDueDate" mode="ios"
+                  [(ngModel)]="verifiedAndClosedStausBlock.dueDate"
+                  (dateChange)="verifiedAndClosedStausBlockDueDateChange($event)">
+              </ion-input>
+              <mat-datepicker-toggle matSuffix [for]="verifiedAndClosedStausBlockDueDate"></mat-datepicker-toggle>
+              <mat-datepicker [touchUi]="isMobile" #verifiedAndClosedStausBlockDueDate
+                [disabled]="disableWholeVerifyCloseStatusBlock || verifiedAndClosedStausBlock.updateFlag==0">
+                <!-- || this.dataFromPrevFindingListScreen.auditInfo.status == 1002"> -->
+                <mat-datepicker-actions>
+                  <button mat-button matDatepickerCancel (click)="verifiedAndClosedStausBlockDueDateClear($event)"
+                    color="secondary">Clear</button>
+                  <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                </mat-datepicker-actions>
+              </mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row><!--palce changed by lokesh-->
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked">Description</ion-label>
+            <ion-textarea  *ngIf="!this.isIOS" autoGrow='true' [(ngModel)]="verifiedAndClosedStausBlock.description" type='text' custom-maxlength [charMaxLength]="2500" (ionChange)="descriptionMaxLengthValidation(verifiedAndClosedStausBlock.description)"
+              [disabled]="disableWholeVerifyCloseStatusBlock || verifiedAndClosedStausBlock.updateFlag==0">
+              <!-- || this.dataFromPrevFindingListScreen.auditInfo.status == 1002"> -->
+            </ion-textarea><!--added by lokesh for jira_id(726)-->
+            <ion-textarea  *ngIf="this.isIOS" autoGrow='true' [(ngModel)]="verifiedAndClosedStausBlock.description" type='text' maxlength="2501" (ionChange)="descriptionMaxLengthValidation(verifiedAndClosedStausBlock.description)"
+              [disabled]="disableWholeVerifyCloseStatusBlock || verifiedAndClosedStausBlock.updateFlag==0">
+            </ion-textarea>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <div class="container">
+        <ion-grid class="ion-no-margin-top">
+          <ion-item lines="none" color="light">
+            <ion-card-subtitle class="title">Attachments</ion-card-subtitle>
+            <input type="file" #fileinput style="display: none;" (change)="pickAttachmentFile($event,'verifyClose')">
+            <ion-button (click)="fileinput.click()" slot="end" size="small" shape="round" color="primary" 
+            [disabled]="verifiedAndClosedStausBlock.updateFlag==0">Add New
+            </ion-button>
+
+          </ion-item>
+        </ion-grid>
+        <ion-list *ngFor="let file of verifiedAndClosedStausBlock.findingRptAttachs">
+          <div class="attachment-ion-item" lines="none">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <!--  <ion-col size="3">
+              <ion-button color="light" fill="clear">
+                <ion-icon slot="icon-only" name="document"></ion-icon>
+              </ion-button>
+            </ion-col> -->
+                <ion-col size="9">
+                  <ion-label>
+                    <h4>{{file.fileName}}</h4>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-button (click)="downloadAttachment(file,'verifyClose');" style="color: #0ed6d8 !important" fill="clear">
+                    <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteOptions(file,'verifyClose');" color="danger" fill="clear" [disabled]="verifiedAndClosedStausBlock.updateFlag==0">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </ion-list>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

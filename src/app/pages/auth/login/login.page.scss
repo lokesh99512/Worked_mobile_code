@@ -1,0 +1,187 @@
+p {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #999596;
+    font-size: smaller;
+}
+
+ion-button {
+    // --background: linear-gradient(to bottom right, rgb(56, 183, 233), rgb(106, 69, 243));
+    --background:linear-gradient(90deg, #350536,#0c8390);
+    z-index: 1;
+}
+
+#hideShowPassword {
+    color: #999596;
+    margin-top: 15px;
+}
+
+@media screen and (orientation:portrait) {
+    .outerbox {
+        position: relative;
+    }
+
+    .box1 {
+        position: absolute;
+        height: 77vw;
+        width: 100%;
+        background: #8086ad;
+        clip-path: circle(90% at 14% -25%);
+    }
+
+    .box2 {
+        position: absolute;
+        height: 77vw;
+        width: 100%;
+        background: #94b2f3bf;
+        clip-path: circle(88% at 69% -36%);
+    }
+
+    .box3 {
+        position: absolute;
+        height: 77vw;
+        width: 100%;
+        //background: #3858e9a6;
+        background: #423474e0;
+        clip-path: circle(90% at 29% -34%);
+
+    }
+
+    .box4 {
+        position: absolute;
+        height: 77vw;
+        width: 100%;
+        // background: linear-gradient(to bottom right, #38b7e982, rgb(106, 69, 243));
+        background:linear-gradient(80deg, #350536ad,#0c8390f1);
+        // background:linear-gradient( to bottom right,rgba(56, 183, 233, 0.842), rgba(107, 69, 243, 0.979));
+        clip-path: circle(107% at 72% -41%);
+    }
+
+    .title {
+        position: absolute;
+        z-index: 1;
+        color: white;
+        margin: 10% 30vw;           //added by ramya for jira id-->mobile-570
+        // padding-left: 79px;
+        //reverted by sudharsan
+    }
+
+    .portraitDesignForm {
+        margin: 77vw 30px 0 30px;
+    }
+
+    .portraitDesignFormForTabletAndIPad{
+        margin: 70vw 30px 0 30px;
+    }
+    
+
+    #landscapeDesign {
+        display: none;
+    }
+
+    ion-button {
+        margin-top: 18vh;
+    }
+
+    .tabAndIpadBut {        //added by @Ramya for jira id - MOBILE-589
+        // margin-top: 50%;
+        overflow: hidden;
+    }
+
+    .mobBut {                //added by @Ramya for jira id - MOBILE-589
+        // margin-top: 65%;
+        overflow: hidden;
+    }
+
+}
+
+@media screen and (orientation:landscape) {
+    #landscapeDesign{
+        height: 100%;
+    }
+
+    .centerLogo {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 48%;
+        height: 40%;
+    }
+
+    ion-grid {
+        // background: linear-gradient(#38b7e982, rgb(106, 69, 243));
+        background:linear-gradient(90deg, #350536,#0c8390);
+        // background:linear-gradient( to bottom right,#38b7e9,rgb(99, 58, 248));
+        padding-bottom: 20vh;
+    }
+
+    .landBoxOuter {
+        position: relative;
+    }
+
+    .landBox {
+        position: absolute;
+        height: 70vw;
+        width: 100%;
+        background: linear-gradient(#38b7e982, rgb(106, 69, 243));
+        clip-path: circle(107% at 72% -41%);
+    }
+
+    .landBox1 {
+        position: absolute;
+        height: 70vw;
+        width: 100%;
+        background: #c0c1e6ee;
+        clip-path: circle(90% at 14% -25%);
+    }
+
+    #portraitDesignForm {
+        display: none;
+    }
+
+    #portraitDesignDiv {
+        display: none;
+    }
+
+    .outerbox {
+        display: none;
+    }
+
+    ion-item {
+        z-index: 1;
+        --background: transparent;
+    }
+
+    ion-button {
+        margin-top: 2vh;
+    }
+
+    ion-card {
+        background-color: rgba(255, 255, 255, 0.986);
+        margin-top: 20vh;
+    }
+
+    form {
+        padding: 0 25px;
+    }
+}
+
+
+
+.email-error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}
+
+.email-error {
+    padding:10px;
+    margin:10px 0;
+ 
+}
+
+

@@ -1,0 +1,466 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="closeModal()"
+      style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="margin-right: 40px;text-align: center;">CERTIFICATE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: #F7F8FC;">
+
+  <form [formGroup]="certificateGenerateForm">
+    <ion-card style="background: white;" *ngIf='withOutAudit&&!isAuditTypeSelected'>
+      <ion-grid style="padding: 0px;margin: 0px 0;">
+        <ion-row
+          style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+          <ion-col size="11">
+            <ion-input type="text" readonly style="color: white;" value='Select Audit Type First'></ion-input>
+          </ion-col>
+          <ion-col size="1" class="ion-text-end" style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+            <ion-icon name="information-circle-outline" color="light"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <div class="row">
+      <div class="col">
+        <div class="tabs">
+          <div class="tab">
+            <input type="checkbox" id="chck1">
+            <label class="tab-label" for="chck1">VESSEL DETAILS</label>
+            <div class="tab-content">
+              <form formGroupName="vesselForm">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Vessel Name</ion-label>
+                        <ion-input type="text" formControlName="vesselName" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Vessel IMO Number</ion-label>
+                        <ion-input type="number" formControlName="vesselIMO" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Vessel Type</ion-label>
+                        <ion-input type="text" formControlName="vesselType" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Certificate No.</ion-label>
+                        <ion-input type="text" formControlName="certificateNo" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">GRT(MT)</ion-label>
+                        <ion-input type="text" formControlName="GRT" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Company IMO Number</ion-label>
+                        <ion-input type="text" formControlName="companyIMONo" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Official Number</ion-label>
+                        <ion-input type="text" formControlName="officialNo" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Company Name</ion-label>
+                        <ion-input type="text" formControlName="companyName" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Port Of Registery</ion-label>
+                        <ion-input type="text" formControlName="registeryPort" [readonly]='true'></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Date Of Registery</ion-label>
+
+                        <mat-form-field class="dateinput" (click)="registeryDate.open()">
+                          <ion-input readonly>
+                            <input #registeryInput matInput readonly [matDatepicker]="registeryDate" mode="ios"
+                              formControlName='registeryDate'>
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="registeryDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #registeryDate disabled>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(registeryInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+
+                      </ion-item>
+                    </ion-col>
+
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Company Address</ion-label>
+                        <ion-textarea type="text" text-wrap formControlName="companyAddress" [readonly]='true'>
+                        </ion-textarea>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </form>
+            </div>
+          </div>
+          <div class="tab">
+            <input type="checkbox" id="chck2" [checked]='checkAuditBlock'>
+            <label class="tab-label" for="chck2"> {{auditSectionLable}} DETAILS</label>
+            <div class="tab-content">
+              <form formGroupName="auditForm">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">{{typeName}} Type</ion-label>
+                        <ionic-selectable item-content [items]="auditTypeArr" formControlName="auditType"
+                          (onChange)="typeChange($event)" itemValueField="auditTypeId" itemTextField="auditTypeDesc"
+                          closeButtonSlot="end" *ngIf='!readonlyFormFields' placeholder="Type">
+                          <ng-template ionicSelectableTitleTemplate>
+                            Type
+                          </ng-template>
+                        </ionic-selectable>
+
+                        <ion-input type='text' formControlName="auditType" *ngIf='readonlyFormFields'
+                          [readonly]='readonlyFormFields'></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">{{typeName}} Sub Type</ion-label>
+                        <ionic-selectable item-content [items]="auditSubTypeArr" formControlName="auditSubType"
+                          (onChange)="subTypeChange($event)" [disabledItems]="auditSubTypeDisabledArr"
+                          closeButtonSlot="end" *ngIf='!readonlyFormFields && !subTypeFlag' placeholder="Sub Type">
+                          <ng-template ionicSelectableTitleTemplate>
+                            Sub Type
+                          </ng-template>
+                        </ionic-selectable>
+                        <ion-input type='text' formControlName="auditSubType" *ngIf='!readonlyFormFields && subTypeFlag'
+                          [readonly]='true' placeholder="Sub Type"></ion-input>
+                        <ion-input type='text' formControlName="auditSubType" *ngIf='readonlyFormFields'
+                          [readonly]='readonlyFormFields' placeholder="Sub Type"></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">{{typeName}} Date</ion-label>
+
+                        <mat-form-field class="dateinput" (click)="auditDate.open()">
+                          <ion-input readonly>
+                            <input #auditdateInput matInput readonly [matDatepicker]="auditDate" mode="ios"
+                              formControlName='auditDate' (dateChange)="auditDateChange($event)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="auditDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #auditDate disabled><!--modified by lokesh for jira id=>Mobile-605,768-->
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(auditdateInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12"
+                      *ngIf='certificateDetailArray.auditTypeId == appConstant.MLC_TYPE_ID && (certificateDetailArray.auditSubTypeId == appConstant.INITIAL_SUB_TYPE_ID || certificateDetailArray.auditSubTypeId == appConstant.RENEWAL_SUB_TYPE_ID || (directInterAddFlag || (certificateDetailArray.auditSubTypeId == appConstant.INTERMEDIATE_SUB_TYPE_ID || certificateDetailArray.auditSubTypeId == appConstant.ADDITIONAL_SUB_TYPE_ID)))'><!--condision changed by lokesh for jira_id(775)-->
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">DMLC II Issue Date</ion-label><!--modified by lokesh for jira_id(770)-->
+                        <mat-form-field class="dateinput" (click)="dmlcIssueDate.open()">
+                          <ion-input>
+                            <input #dmlcisssueInput matInput readonly [matDatepicker]="dmlcIssueDate" [min]="minDate"
+                              mode="ios" formControlName='dmlcIssueDate'><!--palceholder removed by lokesh as informed by basan-->
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="dmlcIssueDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #dmlcIssueDate
+                            [disabled]='!readonlyFormFields && issueExpiryDateFlag'>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(dmlcisssueInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12"
+                      *ngIf='certificateDetailArray.auditTypeId == appConstant.MLC_TYPE_ID && (certificateDetailArray.auditSubTypeId == appConstant.INITIAL_SUB_TYPE_ID || certificateDetailArray.auditSubTypeId == appConstant.RENEWAL_SUB_TYPE_ID || (directInterAddFlag || (certificateDetailArray.auditSubTypeId == appConstant.INTERMEDIATE_SUB_TYPE_ID || certificateDetailArray.auditSubTypeId == appConstant.ADDITIONAL_SUB_TYPE_ID)))'><!--condision changed by lokesh for jira_id(775)-->
+                      <ion-item class="ionIten" no-border>
+                        <ion-label position="stacked" color="dark">DMLC II Issue Place</ion-label><!--modified by lokesh for jira_id(770)-->
+                        <mat-form-field class="example-full-width" style="margin-bottom:-50px ;">
+                          <textarea  style="margin-bottom:5px;" type="text" matInput formControlName='dmlcIssuePlace'
+                            (input)="filterAuditPort($event.target.value)" [matAutocomplete]="auto"></textarea><!--palceholder removed by lokesh as informed by basan-->
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                              {{option}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </ion-item>
+
+                    </ion-col>
+
+                  </ion-row>
+                </ion-grid>
+              </form>
+            </div>
+          </div>
+          <div class="tab">
+            <input type="checkbox" id="chck3" [checked]='checkCertificateBlock'>
+            <label class="tab-label" for="chck3">CERTIFICATE DETAILS</label>
+            <div class="tab-content">
+              <form formGroupName="certificateForm">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Certificate Issued</ion-label>
+                        <ion-input type="text" text-wrap formControlName="certificateIssued" [readonly]="true">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Issue Place</ion-label>
+                        <!--Added code to fix MOBILE-507 by kiran -->
+                        <!--make text area as readOnly format for MOBILE-735 by lokesh -->
+                        <mat-form-field readonly class="example-full-width" style="margin-bottom:-50px ;">
+                          <textarea readonly style="margin-bottom: 5px;"type="text" matInput formControlName='issuePlace'
+                            (input)="filterAuditPort($event.target.value)" [matAutocomplete]="auto"></textarea>
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                              {{option}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                        <!-- <ionic-selectable item-content [items]="issuePlaceArr" formControlName="issuePlace"
+                          [canSearch]="true" closeButtonSlot="end" *ngIf='!readonlyFormFields'
+                          placeholder="Issue Place">
+                          <ng-template ionicSelectableTitleTemplate>
+                            Issue Place
+                          </ng-template>
+                        </ionic-selectable>
+                        <ion-input type="text" text-wrap formControlName="issuePlace" [readonly]="readonlyFormFields"
+                          *ngIf='readonlyFormFields'></ion-input> -->
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12"
+                      *ngIf='certificateDetailArray.auditSubTypeId == appConstant.INTERIM_SUB_TYPE_ID 
+                  || certificateDetailArray.auditSubTypeId == appConstant.INITIAL_SUB_TYPE_ID
+                  || certificateDetailArray.auditSubTypeId == appConstant.RENEWAL_SUB_TYPE_ID && (certificateDetailArray.certIssueId != appConstant.RENEWAL_ENDORSED2 || certificateDetailArray.certIssueId != appConstant.INTERMEDAITE_ENDORSED 
+                  || certificateDetailArray.certIssueId != appConstant.ADDITIONAL_ENDORSED) && (certificateDetailArray.auditSubTypeId == appConstant.RENEWAL_SUB_TYPE_ID && certificateDetailArray.certIssueId != appConstant.RENEWAL_ENDORSED2)'>
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Issue Date</ion-label>
+                        <mat-form-field class="dateinput" (click)="issueDate.open()">
+                          <ion-input readonly>
+                            <input #issueInput matInput readonly [min]="minDate" [max]="maxIssueDate"
+                              [matDatepicker]="issueDate" mode="ios" formControlName='issueDate'
+                              (dateChange)="issueDateChange($event)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="issueDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #issueDate [disabled]='!readonlyFormFields'>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(issueInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12" *ngIf='certificateDetailArray.certIssueId == appConstant.INTERMEDAITE_ENDORSED 
+                                || certificateDetailArray.certIssueId == appConstant.ADDITIONAL_ENDORSED
+                                ||certificateDetailArray.certIssueId == appConstant.RENEWAL_ENDORSED2'>
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Endorsed Date</ion-label>
+
+
+                        <mat-form-field class="dateinput" (click)="issueDate.open()">
+                          <ion-input>
+                            <input #endorsedInput matInput readonly [matDatepicker]="endorsedDate" mode="ios"
+                              [min]="minDate" formControlName='endorsedDate'>
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="endorsedDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #endorsedDate
+                            [disabled]='certificateDetailArray.auditStatusId == appConstant.COMPLETED_AUDIT_STATUS'>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(endorsedInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12" *ngIf="(certificateDetailArray.certIssueId == appConstant.FULL_TERM_CERT || certificateDetailArray.certIssueId == appConstant.RE_ISSUE || directInterAddFlag ) 
+                  && certificateDetailArray.auditSubTypeId != appConstant.INTERIM_SUB_TYPE_ID ">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Date on which Certificate is based</ion-label>
+                        <mat-form-field class="dateinput" (click)="completionDate.open()">
+                          <ion-input>
+                            <input matInput readonly mode="ios" [matDatepicker]="completionDate"
+                               formControlName='completionDate'><!--palceholder removed by lokesh as informed by basan-->
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="completionDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #completionDate>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="CertificateclearDate()"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                      </ion-item>
+                    </ion-col>
+
+
+
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Expiry Date</ion-label>
+
+                        <mat-form-field class="dateinput" (click)="expiryDate.open()">
+                          <ion-input readonly>
+                            <input #expiryInput matInput readonly [min]="minDate" [max]="maxExpiryDate" mode="ios"
+                              [matDatepicker]="expiryDate" formControlName='expiryDate'
+                              (dateChange)="expiryDateChange($event)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="expiryDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #expiryDate [disabled]='readonlyFormFields && disableExpiryDate'>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDateCertificate('expiryDate')"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">{{userTypeName}} Name</ion-label>
+                        <ion-input type="text" text-wrap formControlName="auditorName" [readonly]="true"></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Name to be Printed</ion-label>
+                        <ion-select formControlName="printName">
+                          <ion-select-option value="Yes">Yes</ion-select-option>
+                          <ion-select-option value="No">No</ion-select-option>
+                        </ion-select>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Sign to be Printed</ion-label>
+                        <ion-select formControlName="printSign">
+                          <ion-select-option value="Yes">Yes</ion-select-option>
+                          <ion-select-option value="No" selected="No">No</ion-select-option>
+                        </ion-select>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-button expand="block" style="--background: #1b536e !important;" (click)="addIssuerSign()"
+                        [disabled]="withoutAuditDisabled || this.certificateDetailArray.status == 1002" *ngIf='!issuerSignFlag'>Attach Sign</ion-button>
+
+                      <a *ngIf='issuerSignFlag'>
+                        <ion-label style="padding-left:15px;" color="dark">Issuer sign</ion-label><br><br><!--added by lokesh for jira_id(733)-->
+                        <img src="{{issueSignature}}" height="34px" width="100%" />
+                      </a>
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12" *ngIf="attachsignature">
+                      <ion-item>
+                        <ion-label position="stacked" color="dark">Signature Date</ion-label>
+                        <mat-form-field class="dateinput" (click)="signDate.open()">
+                          <ion-input>
+                            <input #signatureInput matInput readonly [matDatepicker]="signDate" mode="ios"
+                              formControlName='signDate'>
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="signDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #signDate [disabled]='!issuerSignFlag'>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(signatureInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                      </ion-item>
+                    </ion-col>
+
+                  </ion-row>
+                </ion-grid>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+</ion-content>
+<ion-footer no-border>
+  <ion-toolbar style=" --background: #f7f8fc !important;">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-chip outline color="primary" style="width: 100%;background:#213b5c;margin: 0;"
+            [disabled]="!issuerSignFlag || this.certificateDetailArray.status == 1002" (click)="validateAndGenerateCert()">
+            <ion-label style="margin-left: auto;margin-right: auto;color: white;">Generate</ion-label>
+          </ion-chip>
+        </ion-col>
+        <ion-col size="6">
+          <ion-chip outline color="primary" style="width: 100%;background:#1b536e;margin: 0;"
+            [disabled]='!enableDownload' (click)="validateAndDownloadCert()">
+            <ion-label style="margin-left: auto;margin-right: auto; color: white;">Download</ion-label>
+          </ion-chip>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
+
+<!-- <p> certificate modal</p> -->

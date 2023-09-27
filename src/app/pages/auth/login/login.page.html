@@ -1,0 +1,109 @@
+<ion-content>
+  <div class="outerbox">
+    <div class="box1">
+    </div>
+    <div class="box2">
+    </div>
+    <div class="box3">
+    </div>
+    <div class="box4">
+    </div>
+    <div class="title">
+      <!-- <p>BSOL</p> -->
+      <p style="font-weight: 500;font-size: x-large;margin: 14% 0 0 0;
+        color:white
+        ">Mobile Auditing Application</p>
+      <!-- <img src="\assets\ship_PNG5405.png" width="180px" height="100px"> -->
+    </div>
+  </div>
+  <form [ngClass]="[isIpadAndTablet ? 'portraitDesignFormForTabletAndIPad' : 'portraitDesignForm']"
+    [formGroup]="loginForm" (ngSubmit)="onFormSubmit(loginForm.value)">
+    <!-- <form id="portraitDesignForm" [formGroup]="loginForm" (ngSubmit)="register()"> -->
+    <ion-item mode="md">
+      <ion-icon size="small" name="person" zoom="0.5" slot="start" color="primary"></ion-icon><!--modified by lokesh for jira_id(738)-->
+      <ion-label mode="md" position="floating" color="medium">Username</ion-label>
+      <ion-input type="email" style="font-size:13px ;" formControlName="username" [readonly]="makeUserNameReadOnly"></ion-input><!--modified by lokesh for jira_id(738)-->
+    </ion-item>
+    <ng-container
+      *ngIf="loginForm.get('username').hasError('pattern') && (loginForm.get('username').dirty || loginForm.get('username').touched)">
+
+      <div class="email-error">
+        <span>
+          Please enter valid email/username
+        </span>
+      </div>
+    </ng-container>
+
+    <ion-item mode="md">
+      <ion-icon name="key" zoom="0.5" slot="start" color="primary"></ion-icon>  <!-- Changed by Ramya for jira id-Mobile-684 -->
+      <ion-label mode="md" position="floating" color="medium">Password</ion-label>
+      <ion-input formControlName="password" style="font-size:13px ;" [type]="passwordType" clearOnEdit="false"> </ion-input><!--modified by lokesh for jira_id(738)-->
+      <ion-icon id="hideShowPassword" slot="end" [name]="passwordIcon" class="passwordIcon"
+        (click)='hideShowPassword()'></ion-icon>
+    </ion-item>
+    <!-- changed by @Ramya for jira id - MOBILE-589 -->
+    <ion-button mode="md" type="submit" expand="block"  [ngClass]="[isIpadAndTablet ? 'tabAndIpadBut':'mobBut']">LOGIN</ion-button>
+
+  </form>
+
+   
+  <div id="portraitDesignDiv" *ngIf="makeUserNameReadOnly">
+    <p>
+      <!-- <a> Forgot Password ? </a> -->
+      <a (click)="forgetPassword();">Forgot Password?
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+      </a>
+    </p>
+  </div>
+
+
+  <ion-grid id="landscapeDesign" *ngIf="!isIpadAndTablet" class="ion-no-padding">
+    <ion-row>
+      <ion-col sixe="6">
+        <p style="font-weight: 900;font-size: x-large;margin: 40vh 12% 0 12%;
+          color:white
+          ">Mobile Auditing Application</p>
+      </ion-col>
+      <!-- <img class="centerLogo" src="\assets\ship_PNG5405.png"> -->
+
+      <ion-col class="ion-no-padding" sixe="6">
+        <ion-card>
+          <form [formGroup]="loginForm" (ngSubmit)="onFormSubmit(loginForm.value)">
+            <ion-item mode="md">
+              <ion-icon name="person" zoom="0.5" slot="start" color="primary"></ion-icon>
+              <ion-label mode="md" position="floating" color="medium">Username</ion-label>
+              <ion-input type="email" formControlName="username" [readonly]="makeUserNameReadOnly"></ion-input>
+            </ion-item>
+            <ng-container
+              *ngIf="loginForm.get('username').hasError('pattern') && (loginForm.get('username').dirty || loginForm.get('username').touched)">
+
+              <div class="email-error">
+                <span>
+                  Please enter valid email/username
+                </span>
+              </div>
+            </ng-container>
+            <ion-item mode="md">
+              <ion-icon name="key" zoom="0.5" slot="start" color="primary"></ion-icon>
+              <ion-label mode="md" position="floating" color="medium">Password</ion-label>
+              <ion-input formControlName="password" [type]="passwordType" clearOnEdit="false"> </ion-input>
+              <ion-icon id="hideShowPassword" slot="end" [name]="passwordIcon" class="passwordIcon"
+                (click)='hideShowPassword()'></ion-icon>
+            </ion-item>
+
+            <ion-button mode="md" type="submit" expand="block">LOGIN</ion-button>
+          </form>
+
+          <div>
+            <p>
+              <a> Forgot Password ? </a>
+            </p>
+
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>

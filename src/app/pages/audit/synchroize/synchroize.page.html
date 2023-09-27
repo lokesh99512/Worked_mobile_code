@@ -1,0 +1,200 @@
+<ion-header class="header">
+  <ion-toolbar class="toolbar" style="--background:linear-gradient(90deg, #350536,#0c8390);">
+    <ion-title style="text-align: center;">
+      SYNCHRONIZE
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-icon name="options" slot="end" class="filterIcon" style="padding-right: 5px;" (click)="searchFilter($event)">
+    </ion-icon>
+
+  </ion-toolbar>
+  <ion-searchbar color="light" *ngIf="(searchPlaceholderText !== 'Search Issue Date') && (searchPlaceholderText !== 'Search Expiry Date')" type={{searchType}} [(ngModel)]="searchText"
+    (ionChange)="getSearchedText($event)" placeholder={{searchPlaceholderText}}>
+
+  </ion-searchbar>
+
+  <!-- added by archana for jira ID-MOBILE-475 -->
+  <div *ngIf="(searchPlaceholderText === 'Search Issue Date') || (searchPlaceholderText === 'Search Expiry Date')" class="custom-field3">
+    <input [placeholder]="searchPlaceholderText" matInput [(ngModel)]="selectedDate" [matDatepicker]="basicDatepicker"
+      readonly (focus)="basicDatepicker.open()" (click)="basicDatepicker.open()" (dateChange)="getSearchedText($event)">
+    <mat-datepicker-toggle matSuffix [for]="basicDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #basicDatepicker>
+      <mat-datepicker-actions>
+        <button mat-button matDatepickerCancel (click)="DateClear($event)" color="secondary">Clear</button>
+        <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+      </mat-datepicker-actions>
+    </mat-datepicker>
+  </div>
+
+
+  <ion-select [interfaceOptions]="customPopoverOptions" mode="md" interface="popover" #mySelect
+    (ionChange)="selectedCategoryType($event)" class="filterOption">
+
+    <ion-select-option *ngFor="let option of searchCategoryOptions;">
+      {{option}}
+
+    </ion-select-option>
+
+  </ion-select>
+
+
+  <ion-item *ngIf="false" style="border-radius: 50px;" mode="ios">
+
+    <ion-datetime displayFormat="MM DD YYYY" placeholder="Select Issue Date"></ion-datetime>
+
+  </ion-item>
+
+
+</ion-header>
+
+<ion-content class="content" id="sync_screen_content">
+  <div text-center style="text-align: center;">
+    <ion-chip color="primary">
+       <!--for ion lable id is added by lokesh as informed by basan-->
+      <ion-label id='auditCountChipText' style="font-weight: bold;" color="dark">{{tempArray.length}} {{tempArray.length>1?'Audits':"Audit"}} Found</ion-label><!--modified by lokesh for jira_id(915)-->
+    </ion-chip>
+  </div>
+
+  <ion-card style="border-radius: 5px;background: white;" mode="ios" *ngFor="let auditItem of tempArray">
+    <ion-card-header>
+      <ion-card-title>
+        {{auditItem.vesselName}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{auditItem.vesselImoNo}} - {{auditItem.auditTypeDesc}} / {{auditItem.audSubTypeDesc}}
+      </ion-card-subtitle>
+
+      <br>
+      <ion-grid class="ion-no-padding ">
+        <ion-row>
+          <ion-col size="4" style="text-align: start;">
+            <ion-card-subtitle style="font-size: 10px;">
+              ISSUE DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle style=" margin-left: 25px;" color="dark" *ngIf="auditItem.certIssueDate==''">
+              <!--  {{auditItem.auditTypeId === 1005 ? (auditItem.auditDate | date: 'dd-MMM-yyyy'):(auditItem.certIssueDate | date: 'dd-MMM-yyyy')}}
+     --><!--modified by lokesh for jira_id(659)--> 
+     {{auditItem.certIssueDate=='' ? "  --" :auditItem.certIssueDate| date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+            <ion-card-subtitle  color="dark" *ngIf="auditItem.certIssueDate!=''">
+              <!--  {{auditItem.auditTypeId === 1005 ? (auditItem.auditDate | date: 'dd-MMM-yyyy'):(auditItem.certIssueDate | date: 'dd-MMM-yyyy')}}
+     --><!--modified by lokesh for jira_id(659)--> 
+     {{auditItem.certIssueDate=='' ? "  --" :auditItem.certIssueDate| date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" style="text-align: center;">
+            <ion-card-subtitle style="font-size: 10px;">
+              STATUS
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark">
+              {{auditItem.auditStatusDesc}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" style="text-align: end;">
+            <ion-card-subtitle style="font-size: 10px;">
+              EXPIRY DATE
+            </ion-card-subtitle>
+            <ion-card-subtitle style=" margin-right: 25px;" color="dark" *ngIf="auditItem.auditTypeId == 1005">
+              {{auditItem.certExpireDate}}
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" style=" margin-right: 25px;" *ngIf="auditItem.auditTypeId != 1005 &&auditItem.certExpireDate==''">
+               <!--modified by lokesh for jira_id(659)-->
+               {{auditItem.certExpireDate==''?"  --" :auditItem.certExpireDate| date: 'dd-MMM-yyyy'}}
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" *ngIf="auditItem.auditTypeId != 1005 &&auditItem.certExpireDate!=''">
+              <!--modified by lokesh for jira_id(659)-->
+              {{auditItem.certExpireDate==''?"  --" :auditItem.certExpireDate| date: 'dd-MMM-yyyy'}}
+           </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- <ion-item-divider class="ion-no-padding"></ion-item-divider> -->
+      <hr>
+      <ion-row>
+
+        <ion-col size="6">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="primary"
+            (click)="presentModal(auditItem)">More Info</ion-button>
+        </ion-col>
+        <ion-col size="6" class="ion-text-end">
+          <ion-button class="cardButton" fill="outline" mode="ios" size="small" color="success"
+            (click)="syncronize(auditItem)">Synchronize</ion-button>
+        </ion-col>
+
+      </ion-row>
+
+    </ion-card-header>
+
+  </ion-card>
+
+  <div *ngIf='!tempArray'>
+    <ion-card style="border-radius: 5px;background: white;" mode="ios" *ngFor="let fake of fakeAudits" class='fakeItem'>
+      <ion-card-header>
+        <!-- <ion-card-title>
+         
+        </ion-card-title> -->
+        <ion-skeleton-text animated style="width: 60%">
+
+        </ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 40%">
+
+        </ion-skeleton-text>
+
+        <br>
+        <ion-grid class="ion-no-padding ">
+          <ion-row>
+            <ion-col size="4">
+              <!-- <ion-card-subtitle style="font-size: 10px;">
+                ISSUE DATE
+              </ion-card-subtitle> -->
+              <ion-skeleton-text animated style="width: 40%">
+
+              </ion-skeleton-text>
+            </ion-col>
+
+            <ion-col size="4">
+              <!-- <ion-card-subtitle style="font-size: 10px;">
+                STATUS
+              </ion-card-subtitle> -->
+              <ion-skeleton-text animated style="width: 40%">
+
+              </ion-skeleton-text>
+            </ion-col>
+
+            <ion-col size="4">
+              <!-- <ion-card-subtitle style="font-size: 10px;">
+                EXPIRE DATE
+              </ion-card-subtitle> -->
+              <ion-skeleton-text animated style="width: 40%">
+
+              </ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <!-- <ion-item-divider class="ion-no-padding"></ion-item-divider> -->
+        <hr>
+        <ion-row>
+
+          <ion-col size="6" class="moreInfoBtn">
+            <!-- <ion-button fill="outline" mode="ios" size="small" color="primary" (click)="presentModal(auditItem)">More Info</ion-button> -->
+          </ion-col>
+          <ion-col size="6" class="ion-text-end" class="deleteBtn">
+            <!-- <ion-button fill="outline" mode="ios" size="small" color="danger">Delete</ion-button> -->
+          </ion-col>
+
+        </ion-row>
+
+      </ion-card-header>
+
+    </ion-card>
+  </div>
+
+
+
+</ion-content>

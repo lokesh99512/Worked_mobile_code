@@ -1,0 +1,186 @@
+.ionIten {
+  margin: 5px;
+}
+
+.ionContent {
+  background-color: #e8e8e8;
+}
+
+.ql-toolbar.ql-snow+.ql-container.ql-snow {
+  height: 65vh;
+  background: white;
+}
+
+.filterIcon {
+  zoom: 1.7;
+}
+
+@media screen and (orientation: portrait) {
+  .ionLabel {
+    font-size: 12px !important;
+  }
+}
+
+.example-full-width {
+  /**Added By Lokesh  for alignments  JIRA-ID -- 533*/
+    margin-top: -10px;
+    margin-bottom: -26px;
+    /**End here*/
+   /**Added By Lokesh  for alignments  JIRA-ID -- 533*/
+  }
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-focused .mat-form-field-label {
+  color: #6eee79;
+}
+
+.mat-focused .mat-form-field-underline .mat-form-field-ripple {
+  background: #6eee79;
+}
+
+// ::ng-deep.mat-form-field-underline {
+//   /*change color of underline*/
+//   color: green !important;
+// }
+
+.error-message {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0 0 0 5px;
+}
+
+.item-interactive.ion-valid {
+  --highlight-background: transparent;
+}
+
+.item-has-focus .label-stacked.sc-ion-label-md-h {
+  color: var(--ion-color-medium, #989aa2) !important;
+}
+
+.mandatory {
+  color: red;
+}
+
+.ripple-parent {
+  position: relative;
+  overflow: hidden;
+}
+
+.dateinput {
+  margin-top: -18px;
+  margin-bottom: -32px;
+}
+
+.labelalign {
+  margin-bottom: -15px;
+}
+
+// Letter History Table code   **//
+.letterHistoryTable {
+  margin-top: 4px;
+  padding: 20px;
+  // width: 300%;
+  margin-left: 4px;
+  // border: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+.tabledata {
+  background: #03626d;
+  color: rgb(252, 244, 244);
+  border: 0.6px solid rgba(0, 0, 0, 0.8);
+  text-align: center;
+  font-weight: 500;
+  word-wrap: initial;
+  display: table-cell;
+  line-break: unset;
+  // width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.tableviewdata {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 0.6px solid rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 11px;
+  text-align: center;
+  word-wrap: initial;
+  display: table-cell;
+  line-break: unset;
+  width: 100%;
+  white-space: nowrap;
+  overflow: auto;
+  vertical-align: middle;
+}
+
+.iconhistory {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.historytitle {
+  color: black;
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
+.forecast_container {
+  flex-wrap: nowrap;
+  overflow-x: visible !important;
+  overflow-y: hidden;
+}
+
+.disable-action-sheet-btns {
+  cursor: not-allowed;
+  color: gray !important;
+  opacity: 0.5;
+}
+
+.disable-action-sheet-btns>* {
+  pointer-events: none;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vino {
+  visibility: hidden;
+}
+
+.attach-btn-delete {
+  background: transparent;
+  margin-top: 10px;
+  color: red;
+  font-size: 10px; // changed by @Archana 10/06/2022 ID = MOBILE-581
+}
+
+button[disabled] {
+  color: lightgray;
+}
+
+.attach-btn-download {
+  background: transparent;
+  margin-top: 10px;
+  color: #2e8b57;
+  font-size: 10px; // changed by @Archana 10/06/2022 ID = MOBILE-581
+}
+
+.ql-snow .ql-picker.ql-header{ // added by sudharsan for 548
+  display:none;
+}
+//added by lokesh for jira_id(725)
+.dateinputAudit {
+  margin-top: -18px;
+  margin-bottom: -22px;
+}
+

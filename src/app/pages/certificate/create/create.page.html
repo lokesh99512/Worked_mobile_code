@@ -1,0 +1,101 @@
+<ion-header  class="header">
+  <ion-toolbar  class="toolbar" >
+    <ion-title style="text-align: center;">
+      CERTIFICATE CREATION
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-icon name="options" slot="end" class="filterIcon" style="padding-right: 5px;" (click)="searchFilter($event)">
+    </ion-icon>
+    
+  </ion-toolbar>
+  <ion-searchbar mode="ios" color="light" *ngIf="true" type={{searchType}} [(ngModel)]="searchText" (ionChange)="getSearchedText($event)" placeholder={{searchPlaceholderText}}>
+
+  </ion-searchbar>
+
+  <ion-select [interfaceOptions]="customPopoverOptions" mode="md"
+    interface="popover" #mySelect  (ionChange)="selectedCategoryType($event)" class="filterOption" >
+
+    <ion-select-option *ngFor="let option of searchVesselCategoryOptions;" >
+      {{option}}
+      
+    </ion-select-option>
+   
+  </ion-select>
+ <div style="margin-left: 15px;margin-bottom: 5px;">
+    <ion-icon name="information-circle" slot="start" color="light" style="margin-top: 2px;margin-right: 5px;"></ion-icon>
+   <label class="label" style="color: white; font-style: italic;font-family: sans-serif;">select vessel to create a certificate</label>
+ </div>
+  
+    <!-- <ion-item>
+      <ion-icon name="information-circle" slot="start" color="primary" ></ion-icon>
+      <ion-label color="primary" no-padding>select vessel to create a certificate</ion-label>
+    </ion-item>    -->
+    
+ 
+</ion-header>
+
+<ion-content class="content">
+  
+  <ion-card style="border-radius: 5px;background: white;" mode="ios" *ngFor="let vesselItem of tempArray"  >
+    <ion-card-header>
+      <ion-card-title>
+       {{vesselItem.vesselName}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{vesselItem.vesselImoNo}}
+      </ion-card-subtitle>
+    
+      <br>
+      <ion-grid class="ion-no-padding ">
+        <ion-row>
+          <ion-col size="4">
+            <ion-card-subtitle style="font-size: 10px;">
+              GRT(MT)
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" >
+              {{vesselItem.grt}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4">
+            <ion-card-subtitle style="font-size: 10px;">
+              Vessel Type
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark" >
+              {{vesselItem.vesselType}}
+            </ion-card-subtitle>
+          </ion-col>
+
+          <ion-col size="4" >
+            <ion-card-subtitle style="font-size: 10px;">
+              Official No
+            </ion-card-subtitle>
+            <ion-card-subtitle color="dark">
+              {{vesselItem.officialNo}}
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- <ion-item-divider class="ion-no-padding"></ion-item-divider> -->
+      <hr>
+      <ion-row>
+
+        <ion-col size="6">
+          <ion-button  class="cardButton" fill="outline" mode="ios" size="small" color="primary" (click)="$event.stopPropagation();" (click)="presentModal(vesselItem)">More Info</ion-button>
+        </ion-col>
+        <ion-col size="6" class="ion-text-end">
+          <ion-button  class="cardButton" fill="outline" mode="ios" size="small" color="success" (click)="$event.stopPropagation();" (click)="certificateModal(vesselItem)">Create</ion-button>
+        </ion-col>
+
+      </ion-row>
+
+    </ion-card-header>
+
+  </ion-card>
+ 
+ 
+
+</ion-content>

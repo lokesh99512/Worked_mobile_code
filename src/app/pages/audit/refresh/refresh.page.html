@@ -1,0 +1,37 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title style="text-align: center;">REFRESH MASTER DATA</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="refreshForm">
+    <!-- <ion-list>
+
+      <ion-item>
+        <ion-label><strong>Select All</strong></ion-label>
+        <ion-checkbox style="pointer-events: none;opacity: 0.4;" slot="start" formControlName="selectall" [(ngModel)]="masterCheck"
+          [indeterminate]="isIndeterminate" (click)="checkMaster($event)"></ion-checkbox>
+      </ion-item>
+    </ion-list> -->
+    <ion-list>
+      <ion-item *ngFor="let item of checkBoxList" lines="inset">
+        <ion-label>{{item.name}}</ion-label>
+        <ion-checkbox style="pointer-events: none;opacity: 0.4;" slot="start" formControlName="values" [(ngModel)]="item.isChecked" (ionChange)="checkEvent()">
+        </ion-checkbox>
+      </ion-item>
+    </ion-list>
+
+  </form>
+</ion-content>
+<ion-footer no-border>
+  <ion-toolbar style=" --background: white !important;text-align: center;">
+    <ion-chip outline color="primary"
+      style="width: 90%;background:linear-gradient(90deg, #350536,#0c8390);; color: white;" (click)="refreshData()">
+      <ion-label style="margin-left: auto;margin-right: auto;">Refresh Master Data</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-footer>

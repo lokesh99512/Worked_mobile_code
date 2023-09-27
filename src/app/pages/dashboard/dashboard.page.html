@@ -1,0 +1,264 @@
+<ion-header class="ion-no-border">
+  <ion-item lines="none">
+    <ion-button slot="end" fill="clear" color="light" (click)='notificationModal()'>
+      <ion-icon slot="icon-only" name="notifications"></ion-icon>
+      <span><sup style="font: size 20px;;">{{this.auditNotifications}}</sup></span><!--added by lokesh for jira_id(830)-->
+    </ion-button>
+
+    <ion-buttons slot="start">
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-item lines="none">
+    <div  style="width: 100%;"> <!-- Added by sudharsan for JIRA-ID 559-->
+      <ion-label>
+        <h2 style="text-align: center;">Dashboard</h2>
+      </ion-label>
+      <ion-row class="ion-align-items-center" style="color:white;font-weight: 600;opacity: 0.5;">
+
+        <!--  <h4><span><ion-icon  style="margin-bottom: 15px;margin-right: 5px;" name="alert-circle-outline"></ion-icon></span>
+          Master data refreshed on :  {{date | date:'dd MMM yyy, hh:mm aa'}}</h4> -->
+        <ion-col size="8">
+          <h4>Master data refreshed on </h4>
+        </ion-col>
+        <ion-col size="4">
+          <h4>{{date | date:'dd MMM yyy, hh:mm aa'}}</h4>
+        </ion-col>
+      </ion-row>
+      <!--  <ion-row class="ion-align-items-center">
+        <ion-col size="10">
+          <ion-searchbar placeholder="Oman, Muscat" searchIcon="location-outline"></ion-searchbar>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button color="light" fill="clear">
+            <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row> -->
+
+    </div>
+  </ion-item>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-row class="ion-align-items-center ion-padding-horizontal">
+      <ion-col size="6">
+        <div id='auditsLabel' class="my-h5">Audits</div>
+      </ion-col>
+
+    </ion-row>
+
+    <!-- Retrive Card starts here-->
+    <ion-card class="dboard-card" id="ionCardRetrieve">
+      <ion-card-content>
+
+        <ion-row>
+          <ion-col size="3" class="ion-align-self-center">
+            <div class="selected retrive-card-circle ">
+              <ion-icon name="download" color="white" style="zoom: 1.8;"></ion-icon>
+            </div>
+          </ion-col>
+          <ion-col size="9">
+
+            <ion-row>
+              <ion-col size="12">
+                <div id='retrieveCount' style="font-weight: bold; float:right;color:#f9c063;font-size: 1.5rem;">
+                  {{auditsCountToRetrieve}}
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div id='retrieveText' class="card-text">Audits Found to Retrieve</div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Retrive Card ends here-->
+
+    <!-- Perform Card starts here-->
+    <ion-card class="dboard-card" id="ionCardPerform">
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="3" class="ion-align-self-center">
+            <div class="selected perform-card-circle ">
+              <ion-icon name="document" color="white" style="zoom: 1.8;"></ion-icon>
+            </div>
+          </ion-col>
+          <ion-col size="9">
+
+            <ion-row>
+              <ion-col size="12">
+                <div id='performCount' style="font-weight: bold; float:right;color:lightseagreen;font-size: 1.5rem;">
+                  {{availAuditCount}}
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div id='performText' class="card-text">
+                  Audits Found to Perform</div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+    <!-- Perform Card ends here-->
+
+    <!-- Sync Card starts here-->
+    <ion-card class="dboard-card" id="ionCardSync">
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="3" class="ion-align-self-center">
+            <div class="selected sync-card-circle ">
+              <ion-icon name="sync" color="white" style="zoom: 1.8;"></ion-icon>
+            </div>
+          </ion-col>
+          <ion-col size="9">
+
+            <ion-row>
+              <ion-col size="12">
+                <div id='syncCount' style="font-weight: bold; float:right;color:steelblue;font-size: 1.5rem;">
+                  {{availAuditCount}}</div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div id='syncText' class="card-text">Audits Found to Sync</div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+    <!-- Sync Card ends here-->
+
+    <ion-row class="ion-align-items-center ion-padding-horizontal">
+      <ion-col size="6">
+        <div id="certificatesLabel" class="my-h5">Certificates</div>
+      </ion-col>
+
+    </ion-row>
+
+    <!-- Certificates Card starts here-->
+    <ion-card class="dboard-card" id="ionCardcertificates">
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="3" class="ion-align-self-center">
+            <div class="selected cert-card-circle ">
+              <ion-icon name="ribbon" color="white" style="zoom: 1.8;"></ion-icon>
+            </div>
+          </ion-col>
+          <ion-col size="9">
+
+            <ion-row>
+              <ion-col size="12">
+                <div id="certificateCount" style="font-weight: bold; float:right;color:#fb607e;font-size: 1.5rem;">
+                  {{availCertificateCount}}
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div id="certificateText" class="card-text">Certificates Found</div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+    <!-- Certificate Card ends here-->
+
+    <!-- ion-row class="ion-align-items-center ion-padding-horizontal">
+      <ion-col size="6">
+        <div class="my-h5">Recent Actions</div>
+      </ion-col>
+      <ion-col size="6" class="ion-text-right">
+        <h4 class="more ion-text-end">
+          View more
+        </h4>
+      </ion-col>
+    </ion-row>
+ -->
+
+
+    <!-- List of Text Items -->
+    <!-- <ion-list>
+          <ion-item class=".ion-margin-">
+            <ion-row>
+              <ion-col size="2">
+                <div class="selected cert-card-circle margin-top:10x;">
+                <ion-icon name="document" color="white" style="zoom: 1.8;"></ion-icon>
+                </div>
+              </ion-col>
+              <ion-col size="10" class=".ion-padding-start">
+                <h4 style="font-style: bold;">Audit retrieved for the Vessel Ballard with the IMO No 9729738.</h4>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item class=".ion-padding-top">
+            <ion-row>
+              <ion-col size="2">
+                <div class="selected cert-card-circle margin-top:10x;">
+                <ion-icon name="document" color="white" style="zoom: 1.8;"></ion-icon>
+                </div>
+              </ion-col>
+              <ion-col size="10" class=".ion-padding-start">
+                <h4 style="font-style: bold;">Audit retrieved for the Vessel Ballard with the IMO No 9729738.</h4>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item class=".ion-padding-top">
+            <ion-row>
+              <ion-col size="2">
+                <div class="selected cert-card-circle margin-top:10x;">
+                <ion-icon name="document" color="white" style="zoom: 1.8;"></ion-icon>
+                </div>
+              </ion-col>
+              <ion-col size="10" class=".ion-padding-start">
+                <h4 style="font-style: bold;">Audit retrieved for the Vessel Ballard with the IMO No 9729738.</h4>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item class=".ion-padding-top">
+            <ion-row>
+              <ion-col size="2">
+                <div class="selected cert-card-circle margin-top:10x;">
+                <ion-icon name="document" color="white" style="zoom: 1.8;"></ion-icon>
+                </div>
+              </ion-col>
+              <ion-col size="10" class=".ion-padding-start">
+                <h4 style="font-style: bold;">Audit retrieved for the Vessel Ballard with the IMO No 9729738.</h4>
+              </ion-col>
+            </ion-row>
+          </ion-item> -->
+
+
+    <!-- <ion-item>
+            <ion-label>Mega Man X</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>The Legend of Zelda</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Pac-Man</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Super Mario World</ion-label>
+          </ion-item> -->
+    <!--  </ion-list> -->
+
+  </div>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doPullRefreshForRetriveAudit($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+</ion-content>

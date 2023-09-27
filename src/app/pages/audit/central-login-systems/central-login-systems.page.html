@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar mode="md">
+    <ion-title text-left >Central System Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+ 
+  <ion-content position="stacked">
+    <ion-row>
+      <ion-col size="12">
+        <ion-item class="ionIten">
+          <ion-label position="stacked" color="dark">Username</ion-label>
+          <ion-input type='text' style="font-size: 15px;" [(ngModel)]="this.emailId" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item class="ionIten">
+          <ion-label position="stacked" color="dark">Password</ion-label>
+          <ion-input type='Password' [(ngModel)]="this.isPassword"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+   
+  </ion-content>
+  
+  <ion-footer class="footer">
+  
+    <ion-card>
+      <ion-row style="color:black">
+        <ion-col size="6">
+          <ion-button expand="full" color="danger" fill="clear" (click)="closeModal()">
+            Cancel
+            <ion-icon slot="start" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button expand="full" fill="clear" (click)="LoginDetails(this.emailId,this.isPassword)">
+            Login
+            <ion-icon slot="start" name="newspaper-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-footer>
+
+
+
+
+  
+  
+

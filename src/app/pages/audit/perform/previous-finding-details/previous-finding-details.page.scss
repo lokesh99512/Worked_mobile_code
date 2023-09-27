@@ -1,0 +1,48 @@
+//@import "./clarity.css";
+
+.ionIten {
+    margin: 5px;
+}
+
+.card-content-ios {
+    padding-inline-start: 12px !important;
+    padding-inline-end: 12px !important;
+}
+
+/* .container {
+    padding: 20px 1px;
+} */
+
+.attachment-ion-item {
+    --background: #c3c38524;
+    padding: 0;
+    margin: 14px 0;
+    --border-radius: 14px;
+    font-weight: 600;
+
+    ion-lable {
+        padding: 6px 0;
+    }
+}
+
+.attachment-ion-item,
+h4 {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.port-field {
+    background-color: #0080800d !important;
+    width: 100%;
+    padding: 15px;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+    /*change color of label*/
+    color: rgb(0, 0, 0) !important;
+}
+
+::ng-deep .mat-form-field-label {
+    /*change color of label*/
+    color: rgb(0, 0, 0) !important;
+}

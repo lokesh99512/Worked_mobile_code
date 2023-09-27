@@ -1,0 +1,111 @@
+// $midnight: #5575ee;
+$midnight:#1b536e;;
+$clouds: #ecf0f1;
+// General
+body {
+  color: $midnight;
+  background: $clouds;
+  padding: 0 1em 1em;
+}
+h1 {
+  margin: 0;
+  line-height: 2;
+  text-align: center;
+}
+h2 {
+  margin: 0 0 .5em;
+  font-weight: normal;
+}
+input {
+  position: absolute;
+//   opacity: 0;
+  z-index: -1;
+}
+// Layout
+.row {
+  display:flex;
+  .col {
+    flex:1;
+    &:last-child {
+      margin: 0.5em;
+    }
+  }
+}
+/* Accordion styles */
+.tabs {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 4px -2px rgba(0,0,0,0.5);
+}
+.tab {
+  width: 100%;
+  color: white;
+  overflow: hidden;
+  &-label {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+   background: $midnight;
+    font-weight: bold;
+    cursor: pointer;
+    /* Icon */
+   
+    &::after {
+      content: "\276F";
+      width: 1em;
+      height: 1em;
+      text-align: center;
+      transition: all .1s;
+    }
+  }
+  &-content {
+    max-height: 0;
+    padding: 0 1em;
+    color: $midnight;
+    background: white;
+    transition: all .1s;
+  }
+  &-close {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1em;
+    font-size: 0.75em;
+    background: $midnight;
+    cursor: pointer;
+  
+  }
+}
+
+// :checked
+input:checked {
+  + .tab-label {
+    // background: darken($midnight, 10%);
+    &::after {
+      transform: rotate(90deg);
+    }
+  }
+  ~ .tab-content {
+    max-height: 100%;
+    padding: 1em;
+    // border: 2px solid #274fe9;
+    border: 2px solid #0a7480;
+    border-radius: 0px 0px 8px 8px;
+    // background: #e8e8e8;
+  }
+}
+
+
+.item-interactive.ion-valid{
+  --highlight-background: transparent;
+
+}
+
+.item-has-focus .label-stacked.sc-ion-label-md-h {
+  color: var(--ion-color-dark, #989aa2) !important;
+}
+
+
+.dateinput{
+  margin-top: -18px;
+  margin-bottom: -22px;//modified by lokesh for jira_id(784)
+}

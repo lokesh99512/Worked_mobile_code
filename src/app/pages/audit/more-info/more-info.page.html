@@ -1,0 +1,456 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>{{modalHeaderTitle}} Details</ion-title>
+    
+        <ion-icon name="close-circle-outline" slot="end" style="padding-right: 5px;zoom:1.5" (click)="closeModal()"></ion-icon>
+      
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-header class="ion-no-border">
+  <ion-item lines="none" id="ionHeader">
+    <ion-title id="model_header_title" style="color: white; text-align: center;"> {{modalHeaderTitle}} Details</ion-title> <!--  -->
+    <ion-buttons id="btn_close_model" slot="end">
+      <ion-icon name="close-circle-outline" slot="end" style="padding-right: 4px;zoom:1.2; color :white"
+        (click)="closeModal()"></ion-icon>
+
+    </ion-buttons>
+
+  </ion-item>
+
+</ion-header>
+
+<ion-content id="model_page_content">
+
+  <div *ngIf="this.modalFlag=='performAudit'" style="margin-top: 1em; margin-left:1em;">
+    <ion-label id="title" color="dark" style="font-size:2em; font-weight:550;">{{modalTitle}}</ion-label>
+  </div>
+
+  <div *ngIf="this.modalFlag=='performAudit'">  
+    <ion-card>
+      <form>
+        <ion-grid>
+          <ion-row>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_vessel_imo" position="floating">Vessel Imo Number</ion-label>
+                <ion-input id="input_vessel_imo" type="text" value={{modalDetail.vesselImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_company_imo" position="floating">Company Imo Number</ion-label>
+                <ion-input id="input_company_imo" type="text" value={{modalDetail.companyImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_issue_date" position="floating">Issue Date</ion-label>
+                <ion-input id="input_issue_date" type="text" value={{modalDetail.certIssueDate}} readonly
+                  style="display: none;"></ion-input>
+                    <!--added by lokesh for jira_id(659)-->
+                <span id="input_cert_issue_date"
+                  style="margin-top:20px">{{modalDetail.certIssueDate==''?"--":modalDetail.certIssueDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_expiry_date" position="floating">Expiry Date</ion-label>
+                <ion-input id="input_expiry_date" type="text" value={{modalDetail.certExpireDate}} readonly
+                  style="display: none;"></ion-input>
+                 <!--added by lokesh for jira_id(659)-->
+                  <span id="input_cert_expiry_date"
+                  style="margin-top:20px">{{modalDetail.certExpireDate==''||modalDetail.certExpireDate=='--'? "--":modalDetail.certExpireDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_letter_no" position="floating">Certificate/ Letter No.</ion-label>
+                <ion-input id="input_cert_letter_no" type="text" value={{modalDetail.certificateNo}} readonly>
+                </ion-input>
+                  <!--added by lokesh for jira_id(659)-->
+                <span id="input_cert_letter_no"
+                  style="margin-top:0px">{{modalDetail.certificateNo==''||modalDetail.certificateNo==null ? "--":modalDetail.certificateN}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_type" position="floating">Type</ion-label>
+                <ion-input id="input_audit_type" type="text" value={{modalDetail.auditTypeDesc}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_subtype" position="floating">Sub Type</ion-label>
+                <ion-input id="input_audit_subtype" type="text" value={{modalDetail.audSubTypeDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_status" position="floating"> {{TYPEDESC}} status </ion-label>
+                <ion-input id="input_audit_status" type="text" value={{modalDetail.auditStatusDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card>
+  </div>
+
+  <div *ngIf="this.modalFlag=='retrieveAudit'" style="margin-top: 1em; margin-left:1em;">
+    <ion-label id="title" color="dark" style="font-size:2em; font-weight:550;">{{modalTitle}}</ion-label>
+  </div>
+  <div *ngIf="this.modalFlag=='retrieveAudit'">
+    <ion-card>
+      <form>
+        <ion-grid>
+          <ion-row>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_vessel_imo" position="floating">Vessel Imo Number</ion-label>
+                <ion-input id="input_vessel_imo" type="text" value={{modalDetail.vesselImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_company_imo" position="floating">Company Imo Number</ion-label>
+                <ion-input id="input_company_imo" type="text" value={{modalDetail.companyImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_issue_date" position="floating">Issue Date</ion-label>
+                <ion-input id="input_issue_date" type="text" value={{modalDetail.certIssueDate}} readonly></ion-input>
+                 <!--added by lokesh for jira_id(659)-->
+                <span id="input_cert_issue_date"
+                style="margin-top:0px">{{modalDetail.certIssueDate==''?"--":modalDetail.certIssue | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_expiry_date" position="floating">Expiry Date</ion-label>
+                <ion-input id="input_expiry_date" type="text" value={{modalDetail.certExpireDate}} readonly></ion-input>
+                <!--added by lokesh for jira_id(659)-->
+                <span id="input_cert_expiry_date"
+                style="margin-top:0px">{{modalDetail.certExpireDate==''||modalDetail.certExpireDate=='--'? "--":modalDetail.certExpire| date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_cert_letter_no" position="floating">Certificate/ Letter No.</ion-label>
+                <ion-input id="input_cert_letter_no" type="text" value={{modalDetail.certificateNo}} readonly>
+                </ion-input>
+                  <!--added by lokesh for jira_id(659)-->
+                <span id="input_cert_letter_no"
+                style="margin-top:0px">{{modalDetail.certificateNo==''||modalDetail.certificateNo==null ? "--":modalDetail.certificateN}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_audit_type" position="floating">Type</ion-label>
+                <ion-input id="input_audit_type" type="text" value={{modalDetail.auditTypeDesc}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_audit_subtype" position="floating">Sub Type</ion-label>
+                <ion-input id="input_audit_subtype" type="text" value={{modalDetail.audSubTypeDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_audit_status" position="floating" readonly="true">{{TYPEDESC}} Status</ion-label>
+                <ion-input id="input_audit_status" type="text" value={{modalDetail.auditStatusDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card>
+  </div>
+
+
+  <div *ngIf="this.modalFlag=='certCreate'" style="margin-top: 1em; margin-left:1em;">
+    <ion-label id="title" color="dark" style="font-size:2em; font-weight:550;">{{modalTitle}}</ion-label>
+  </div>
+  <div *ngIf="this.modalFlag=='certCreate'">
+
+
+    <ion-card>
+      <form>
+        <ion-grid>
+          <ion-row>
+
+            <ion-col size-lg="6" size-md="6" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_vessel_imo" position="floating">Vessel Imo Number</ion-label>
+                <ion-input id="input_vessel_imo" type="text" value={{modalDetail.vesselImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="4" size-md="4" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_vessel_type" position="floating">Vessel Type Name</ion-label>
+                <ion-input id="input_vessel_type" type="text" value={{modalDetail.vesselType}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="4" size-md="4" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_por" position="floating">Port Of Registry</ion-label>
+                <ion-input id="label_por" type="text" value={{modalDetail.portOfReg}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="4" size-md="4" size-sm="6" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_official_no" position="floating">Official Number</ion-label>
+                <ion-input id="input_official_no" type="text" value={{modalDetail.officialNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="6" size-md="6" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_grt" position="floating">GRT</ion-label>
+                <ion-input id="input_grt" type="text" value={{modalDetail.grt}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="6" size-md="6" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_company_imo" position="floating">Company Imo No</ion-label>
+                <ion-input id="input_company_imo" type="text" value={{modalDetail.companyImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="4" size-md="4" size-sm="4" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_company_name" position="floating"> Company Name</ion-label>
+                <ion-textarea id="input_company_name" type="text" value={{modalDetail.companyName}} readonly>
+                </ion-textarea>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="6" size-md="6" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_company_address" position="floating">Company Address</ion-label>
+                <ion-textarea id="input_company_address" type="text" value={{modalDetail.companyAddress}} readonly>
+                </ion-textarea>
+              </ion-item>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card>
+  </div>
+
+  <div *ngIf="this.modalFlag=='certSearch'" style="margin-top: 1em; margin-left:1em;">
+    <ion-label id="title" color="dark" style="font-size:2em; font-weight:550;">{{modalTitle}}</ion-label>
+  </div>
+
+  <div *ngIf="this.modalFlag=='certSearch'">
+    <ion-card>
+      <form>
+        <ion-grid>
+          <ion-row>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_type" position="floating">Certificate Type</ion-label>
+                <ion-input id="input_cert_type" type="text" value={{modalDetail.auditTypeDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_subtype" position="floating">Certificate Sub Type</ion-label>
+                <ion-input id="input_cert_subtype" type="text" value={{modalDetail.auditSubTypeDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_vessel_imo" position="floating">Vessel Imo Number</ion-label>
+                <ion-input id="input_vessel_imo" type="text" value={{modalDetail.vesselImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_vessel_name" position="floating">Vessel Name</ion-label>
+                <ion-input id="input_vessel_name" type="text" value={{modalDetail.vesselName}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_issue_date" position="floating"> Certificate Issue Date</ion-label>
+                <ion-input id="input_cert_issue_date" type="text" value={{modalDetail.certIssueDate}} readonly
+                  style="display: none;"> </ion-input>
+                <span id="input_issue_date"
+                  style="margin-top:10px">{{modalDetail.certIssueDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_expiry_date" position="floating">Certificate Expiry Date</ion-label>
+                <ion-input id="input_cert_expiry_date" type="text" value={{modalDetail.certExpireDate}} readonly
+                  style="display: none;"></ion-input>
+                <span id="input_expiry_date"
+                  style="margin-top:10px">{{modalDetail.certExpireDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_letter_no" position="floating">Certificate/ Letter No.</ion-label>
+                <ion-input id="input_cert_letter_no" type="text" value={{modalDetail.certificateNo}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item *ngIf='modalDetail.activeStatus==1'>
+                <ion-label id="label_cert_status" position="floating">Certificate Status</ion-label>
+                <ion-input id="input_cert_status" type="text" value='Active' readonly></ion-input>
+              </ion-item>
+              <ion-item *ngIf='modalDetail.activeStatus!=1'>
+                <ion-label id="label_cert_status" position="floating">Certificate Status</ion-label>
+                <ion-input id="input_cert_status" type="text" value='Inactive' readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item *ngIf='modalDetail.certIssueId==1004'>
+                <ion-label id="label_intermediate_end" position="floating">Intermediate Endorsement</ion-label>
+                <ion-input id="input_additional_end" type="text" value={{modalDetail.endorsedDate}} readonly
+                style="display: none;"> </ion-input><!--moidfied by lokesh for jira_id(782)-->
+                <span id="input_additional_end"
+                  style="margin-top:10px">{{modalDetail.endorsedDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+              <ion-item *ngIf='modalDetail.certIssueId!=1004'>
+                <ion-label id="label_intermediate_end" position="floating">Intermediate Endorsement</ion-label>
+                <ion-input id="input_intermediate_end" type="text" value='--' readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item *ngIf='modalDetail.certIssueId==1005'>
+                <ion-label id="label_additional_end" position="floating">Additional Endorsement</ion-label>
+                <ion-input id="input_additional_end" type="text" value={{modalDetail.endorsedDate}} readonly
+                  style="display: none;"> </ion-input><!--moidfied by lokesh for jira_id(782)-->
+                  <span id="input_additional_end"
+                    style="margin-top:10px">{{modalDetail.endorsedDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+              <ion-item *ngIf='modalDetail.certIssueId!=1005'>
+                <ion-label id="label_additional_end" position="floating">Additional Endorsement</ion-label>
+                <ion-input id="input_additional_end" type="text" value='--' readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item *ngIf='modalDetail.certIssueId==10012 || modalDetail.certIssueId==1007'>
+                <ion-label id="label_renewal_end" position="floating">Renewal Endorsement</ion-label>
+                <ion-input id="input_renewal_end" type="text" value={{modalDetail.endorsedDate}} readonly></ion-input>
+              </ion-item>
+              <ion-item *ngIf='modalDetail.certIssueId!=10012 && modalDetail.certIssueId!=1007'>
+                <ion-label id="label_renewal_end" position="floating">Renewal Endorsement</ion-label>
+                <ion-input id="input_renewal_end" type="text" value='--' readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_official_no" position="floating">Official No.</ion-label>
+                <ion-input id="input_official_no" type="text" value={{modalDetail.officialNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_company_imo" position="floating">Company Imo No.</ion-label>
+                <ion-input id="input_company_imo" type="text" value={{modalDetail.companyImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="12" size="12" class="line-input">
+              <ion-item>
+                <ion-label id="label_cert_with_audit" position="floating">Certificate With Audit</ion-label>
+                <ion-input id="input_cert_with_audit" type="text" value={{modalDetail.certificateWithAudit}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card>
+  </div>
+
+  <div *ngIf="this.modalFlag=='syncAudit'" style="margin-top: 1em; margin-left:1em;">
+    <ion-label id="title" color="dark" style="font-size:2em; font-weight:550;">{{modalTitle}}</ion-label>
+  </div>
+  <div *ngIf="this.modalFlag=='syncAudit'">
+    <ion-card>
+      <form>
+        <ion-grid>
+          <ion-row>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_vessel_imo" position="floating">Vessel Imo Number</ion-label>
+                <ion-input id="input_vessel_imo" type="text" value={{modalDetail.vesselImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_company_imo" position="floating">Company Imo Number</ion-label>
+                <ion-input id="input_company_imo" type="text" value={{modalDetail.companyImoNo}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_issue_date" position="floating">Issue Date</ion-label>
+                <ion-input id="input_issue_date" type="text" value={{modalDetail.certIssueDate}} readonly
+                  style="display: none;"></ion-input>
+                    <!--added by lokesh for jira_id(659)-->
+                  <span id="input_cert_issue_date"
+                  style="margin-top:15px">{{modalDetail.certIssueDate==''?"--":modalDetail.certIssueDate | date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_expiry_date" position="floating">Expiry Date</ion-label>
+                <ion-input id="input_expiry_date" type="text" value={{modalDetail.certExpireDate}} readonly
+                  style="display: none;"></ion-input>
+                    <!--added by lokesh for jira_id(659)-->
+                  <span id="input_cert_expiry_date"
+                  style="margin-top:15px">{{modalDetail.certExpireDate==''||modalDetail.certExpireDate=='--'? "--":modalDetail.certExpireDate| date: 'dd-MMM-yyyy'}}</span>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_certificate_letter-no" position="floating">Certificate/ Letter No.</ion-label>
+                <ion-input id="input_certificate_letter-no" type="text" value={{modalDetail.certificateNo}} readonly>
+                <!--added by lokesh for jira_id(659)-->
+                  <span id="input_cert_letter_no"
+                  style="margin-top:10px">{{modalDetail.certificateNo==''||modalDetail.certificateNo==null ? "--":modalDetail.certificateN}}</span>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_type" position="floating">Type</ion-label>
+                <ion-input id="input_audit_type" type="text" value={{modalDetail.auditTypeDesc}} readonly></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_subtype" position="floating">Sub Type</ion-label>
+                <ion-input id="input_audit_subtype" type="text" value={{modalDetail.audSubTypeDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="12" size-md="12" size-sm="6" size="12" class="line-input"><!--ion col sizes modified  by lokesh for jira_id(663)-->
+              <ion-item>
+                <ion-label id="label_audit_status" position="floating" readonly="true">{{TYPEDESC}} Status</ion-label>
+                <ion-input id="input_audit_status" type="text" value={{modalDetail.auditStatusDesc}} readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card>
+  </div>
+</ion-content>

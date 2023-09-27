@@ -1,0 +1,70 @@
+
+.filterIcon{
+    zoom: 1.5;
+}
+
+.content{
+    background: #F7F8FC;
+}
+
+.filterOption{
+    display: none;
+}
+
+.cardButton{
+    height: 27px;
+    width: 80px;
+}
+
+@media only screen and (min-width: 769px) and (min-height: 768px) {                   //added by archana for jira ID-MOBILE-475
+    .custom-field3 input {
+      //added by archana for jira ID-MOBILE-475
+      border: none;
+      -webkit-appearance: none;
+      -ms-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: #f2f2f2;
+      padding: 16px;
+      border-radius: 3px;
+      width: 705px !important;
+      color: black;
+      font-size: 14px;
+      box-shadow: none;
+      border-bottom: none;
+      height: -1px !important;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      font-size: initial;
+    }
+ 
+  }
+ 
+  @media screen and (max-width: 768px) {                        //added by archana for jira ID-MOBILE-475
+    .custom-field3 input {
+      
+      border: none;
+      -webkit-appearance: none;
+      -ms-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: #f2f2f2;
+      padding: 12px;
+      border-radius: 3px;
+      width: 282px;
+      color: black;
+      font-size: 14px;
+      box-shadow: none;
+      border-bottom: none;
+      height: -1px !important;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      font-size: initial;
+    }
+  }
+ 
+ ::ng-deep .custom-field3 .mat-icon-button {
+   color: white;
+   margin-bottom: 12px;
+   }
+ 

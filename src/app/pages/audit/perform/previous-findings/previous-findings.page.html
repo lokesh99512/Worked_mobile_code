@@ -1,0 +1,347 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-icon name="arrow-back-outline" slot="start" color="light"  style="padding-left: 5px;zoom:2"  (click)="backButton()">
+    </ion-icon>
+    <ion-title>Previous Audit Findings</ion-title>
+    <ion-icon name="save" slot="end" class="filterIcon" style="padding-right: 5px;"
+      (click)="findingsDataForm.ngSubmit.emit()">
+    </ion-icon>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style=" --background: #e8e8e8;">
+  
+  <form [formGroup]="findingsForm" (ngSubmit)="save(findingsForm.getRawValue())" #findingsDataForm="ngForm">
+    <div formArrayName="findings">
+      <div *ngFor="let find of findingsForm.get('findings')['controls']; let i=index">
+
+        <ion-card style="background: white;">
+
+
+
+          <div [formGroupName]="i">
+
+            <ion-grid style="padding: 0px;margin: 0px 0;">
+              <ion-row style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+                <ion-col size="11">
+                  <ion-input type="text" formControlName='displayFinging'  readonly  style="color: white;" ></ion-input>
+                </ion-col>
+                <ion-col size="1" class="ion-text-end" style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+                  <ion-icon [name]="cardDetailsFlag != i?'caret-down-circle-outline':'caret-up-circle-outline'" (click)="viewDetailsToggle(i)" color="light"></ion-icon>
+                </ion-col>
+               </ion-row>
+                  
+
+              <ion-row>
+                <!-- <ion-col size="5">
+                    <ion-button  fill="outline" mode="ios" size="small"  color="danger" style=" margin-left: 20px; margin-top: 20px;" (click)="deleteOptions(i)">
+                      <ion-icon name="trash" slot="start" ></ion-icon>
+                      Delete
+                    </ion-button>
+                </ion-col> -->
+                <ion-col size="7">
+                  <ion-item class="ionIten" >
+
+                    <ion-label position="stacked" color="dark">Audit Code</ion-label>
+                    <ionic-selectable item-content [items]="auditCodeArr" [canSearch]="true" 
+                      (onChange)="auditCodeChange($event,i)" formControlName='auditCode' closeButtonSlot="end">
+                      <ng-template ionicSelectableTitleTemplate>
+                          Audit Code 
+                      </ng-template>
+                    </ionic-selectable>
+
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+              <ion-col size="12">
+                <ion-item class="ionIten" >
+                  <ion-label position="stacked" color="dark"> Audit Element</ion-label>
+                  <ion-input type='text' formControlName='elements'  readonly></ion-input>
+                </ion-item>
+              </ion-col>
+              </ion-row>
+            </ion-grid>
+
+
+
+            <div [hidden]="cardDetailsFlag != i" style="background-color: rgb(255, 255, 255);padding-bottom: 25px;">
+              <div formArrayName="findingDetail">
+                <div *ngFor="let details of find.get('findingDetail').controls; let j=index;let firstj = first ;let lastj = last;">
+                  <!-- <fieldset> -->
+
+
+
+                  <div [formGroupName]="j">
+                    <!-- <label>serialNo:</label>
+                            <input formControlName="serialNo" /> <span><button (click)="deleteFindingDetail(find.controls.findingDetail, j)">Delete FindingDetails</button></span>  -->
+
+                    <ion-grid class="ion-no-padding" style="padding: 0px;margin: 0px 0;">
+                      <ion-row style="background-color: #eff0f1; padding: 5px;
+                     font-weight: 500;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"
+                     *ngIf="find.get('findingDetail').at(j).value.origAuditSeqNo === '' ">
+                        <ion-col size="12" >
+                        
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="dark">Audit Place</ion-label>
+                              <ionic-selectable item-content [items]="portArr" [canSearch]="true" formControlName='auditPlace'
+                                closeButtonSlot="end">
+                                <ng-template ionicSelectableTitleTemplate>
+                                  Audit Place
+                                </ng-template>
+                              </ionic-selectable>
+                            
+                            </ion-item>
+                           
+                        </ion-col >
+                      <!--   <ion-col size="12"  >
+                          Plan has been accepted as part of Initial AUDIT at {{find.get('findingDetail').at(j).value.auditPlace}},by {{find.get('findingDetail').at(j).value.userIns}} on {{find.get('findingDetail').at(j).value.statusDate}}
+                        </ion-col> -->
+                       
+                        <ion-col size="12" *ngIf="find.get('findingDetail').at(j).value.nextActionId == 'NIL' ">
+                          <mat-checkbox  formControlName='completePrevAudit'>Complete PREVIOUS Audit</mat-checkbox>
+                        </ion-col>
+                        
+                      </ion-row>
+
+                      <ion-row>
+                        <ion-col size="12">
+
+                          <ion-item class="ionIten"  *ngIf='j===0'>
+                            <ion-label position="stacked" color="dark">Category</ion-label>
+                            <ionic-selectable item-content [items]="findingCategoryOpt1" [canSearch]="true" [isEnabled]=auditCatEnable
+                              (onChange)="auditCategoryChange($event,i,j)" formControlName='categoryId' closeButtonSlot="end">
+                              <ng-template ionicSelectableTitleTemplate>
+                                Category
+                              </ng-template>
+                            </ionic-selectable>
+                          </ion-item>
+
+                          <!-- <ion-item class="ionIten"  *ngIf='j===0 && !setNewFinding'>
+                            <ion-label position="stacked" color="dark">Category</ion-label>
+                            <ionic-selectable item-content [items]="findingCategoryOpt" [canSearch]="true"
+                              [isEnabled]=auditCatEnable  
+                            (onChange)="auditCategoryChange($event,i,j)" formControlName='categoryId' closeButtonSlot="end">
+                              <ng-template ionicSelectableTitleTemplate>
+                                  Category
+                              </ng-template>
+                            </ionic-selectable>
+                          </ion-item> -->
+
+
+                          <ion-item class="ionIten"  *ngIf='j>0'>
+                              <!-- <ion-label position="stacked" color="dark">Category</ion-label> -->                             
+                              <ion-input type='text' formControlName='categoryId' [disabled]='j>0'></ion-input>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+
+                      <ion-row>
+                        <ion-col size="12">
+                            <!-- <ion-item class="ionIten"  *ngIf='j===0'>
+                                
+                                <ionic-selectable item-content [items]="findingStatusOpt" [canSearch]="true"
+                                  placeholder="Status" [isEnabled]=categoryEnabled (onChange)="auditStatusChange($event,i,j)" formControlName='statusId' readonly>
+                                  <ng-template ionicSelectableTitleTemplate>
+                                      Status 
+                                  </ng-template>
+                                </ionic-selectable>
+                              </ion-item> -->
+
+                              <ion-item class="ionIten"  >
+                                  <ion-label position="stacked" color="dark">Status</ion-label>                             
+                                  <ion-input type='text' formControlName='statusId'  [disabled]=true></ion-input>
+                              </ion-item>
+                        </ion-col>
+                      </ion-row>
+
+                      <ion-row>
+                        <ion-col size="6">
+                            <ion-item class="ionIten" >
+                                <ion-label position="stacked" color="dark">Status Date</ion-label>
+                                <ion-datetime displayFormat="DD-MMM-YYYY" placeholder='Status Date' [disabled]=disabled formControlName='statusDate'
+                                 pickerFormat="DD-MMM-YYYY" mode="ios" (ionChange)="statusDateChange($event,i,j,find)" [min]='minStatusDate' [max]='maxStatusDate'>                                 
+                                </ion-datetime>
+                              </ion-item>
+                        </ion-col>
+
+                        <ion-col size="6">
+                          <ion-item class="ionIten" >
+                              <ion-label position="stacked" color="dark">Due Date</ion-label>
+                            <ion-datetime displayFormat="DD-MMM-YYYY" placeholder='Due Date'  [disabled]=disabled formControlName='dueDate'
+                              pickerFormat="DD-MMM-YYYY" mode="ios" [min]='minDueDate' [max]='maxDueDate'></ion-datetime>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+
+                      <ion-row>
+                        <ion-col size="12">
+                          <ion-item class="ionIten"  *ngIf='j===0' >
+                              <ion-label position="stacked" color="dark">Next Action</ion-label>
+                            <ionic-selectable item-content [items]="findingStatusOpt" [canSearch]="true" formControlName='nextActionId' [id]="'nextAction'+i+j"
+                               [isEnabled]="isStatusDateEnable(i,j)" (onChange)="auditNxtActionChange($event,i,j,find)"
+                              [disabledItems]="disabledNxtActionArr0" closeButtonSlot="end">
+                              <ng-template ionicSelectableTitleTemplate>
+                                  Next Action
+                              </ng-template>
+                            </ionic-selectable>
+                          </ion-item>
+                          <ion-item class="ionIten"  *ngIf='j==1'>
+                              <ion-label position="stacked" color="dark">Next Action</ion-label>
+                              <ionic-selectable item-content [items]="findingStatusOpt" [canSearch]="true" formControlName='nextActionId' [id]="'nextAction'+i+j"
+                                 [isEnabled]="isStatusDateEnable(i,j)" (onChange)="auditNxtActionChange($event,i,j,find)"
+                                [disabledItems]="disabledNxtActionArr1" closeButtonSlot="end">
+                                <ng-template ionicSelectableTitleTemplate>
+                                    Next Action
+                                </ng-template>
+                              </ionic-selectable>
+                            </ion-item>
+                            <ion-item class="ionIten"  *ngIf='j==2'>
+                                <ion-label position="stacked" color="dark">Next Action</ion-label>
+                                <ionic-selectable item-content [items]="findingStatusOpt" [canSearch]="true" formControlName='nextActionId' [id]="'nextAction'+i+j"
+                                   [isEnabled]="isStatusDateEnable(i,j)" (onChange)="auditNxtActionChange($event,i,j,find)"
+                                  [disabledItems]="disabledNxtActionArr2" closeButtonSlot="end">
+                                  <ng-template ionicSelectableTitleTemplate>
+                                      Next Action
+                                  </ng-template>
+                                </ionic-selectable>
+                              </ion-item>
+                              <ion-item class="ionIten"  *ngIf='j==3'>
+                                  <ion-label position="stacked" color="dark">Next Action</ion-label>
+                                  <ionic-selectable item-content [items]="findingStatusOpt" [canSearch]="true" formControlName='nextActionId' [id]="'nextAction'+i+j"
+                                     [isEnabled]="isStatusDateEnable(i,j)" (onChange)="auditNxtActionChange($event,i,j,find)"
+                                    [disabledItems]="disabledNxtActionArr3" closeButtonSlot="end">
+                                    <ng-template ionicSelectableTitleTemplate>
+                                        Next Action
+                                    </ng-template>
+                                  </ionic-selectable>
+                                </ion-item> 
+                        </ion-col>                       
+                      </ion-row>
+
+                      <ion-row>
+                        <ion-col size="12">
+                          <ion-item class="ionIten">
+                              <ion-label position="stacked" color="dark">Description</ion-label>
+                            <ion-textarea autoGrow='true' type='text'  [disabled]=disabled formControlName='descriptions'></ion-textarea>
+                          </ion-item>
+                        </ion-col>
+
+                      </ion-row>
+
+                    </ion-grid>
+
+
+
+
+                    <div formArrayName="findingRptAttachs">
+
+                      <ion-button class="cardButton" fill="outline" mode="ios" size="small"  color="primary" style=" margin-left: 10px;" [disabled]=!lastj  (click)="addFindingReports(details.controls.findingRptAttachs)" >Add Finding Attachments
+                      </ion-button>
+                      
+                      <div *ngFor="let attach of details.get('findingRptAttachs').controls; let k=index;firstk as isFirst; lastk as isLast">
+                          <div style="    background: #f3f3f3; margin: 0 9px;    padding-bottom: 12px;margin-bottom: 10px;">
+                          <ion-row>
+                            <ion-col>
+                                <h4 style="margin-top:5px;">Attachment {{k+1}} </h4>
+                            </ion-col>
+                            <ion-col class="ion-text-end" style="margin-top:5px;">
+                                <ion-icon name="md-close" (click)="deleteFindingAttachments(details.controls.findingRptAttachs, k)" style="color: red;zoom:1.2"></ion-icon>
+                            </ion-col>
+                          </ion-row>
+                            
+                          <div [formGroupName]="k">
+
+                           <!--  <ion-input type="text" formControlName="fileSeqNo" [value]="k+1">k</ion-input>
+                            <ion-input type="text" formControlName="findingSeqNo" [value]="j+1"></ion-input>  -->
+
+                              <!-- <ion-row>
+                                <ion-col size="4">
+                                  <ion-button  fill="outline" mode="ios" size="small"  color="tertiary" (click)="fileinput.click()" >  
+                                    <ion-icon name="attach" slot="start" ></ion-icon>
+                                    Attach file</ion-button>
+                                    <input type="file" #fileinput style="display: none;" formControlName="fileName">
+                                   
+                                  </ion-col>
+                                   <ion-col size="8">
+                                    </ion-col>
+                                  </ion-row> -->
+
+                                  <!-- 
+                                    <input type="file" #fileinput style="display: none;" (change)="fileChanged($event,attachments.seqNo)"
+                                    (click)="onInputClick(i)">
+                                   -->
+
+                                  <input type="file" #fileinput style="display: none;" (change)="fileChanged($event,details.controls.findingRptAttachs,i,j,k)">
+                                  <ion-item lines="none" style="--background: transparent;">                                                                                                      
+                                    <ion-button fill="outline" mode="ios" size="small" color="primary" (click)="fileinput.click()" [disabled]=!lastj>
+                                      <ion-icon name="attach" slot="start"></ion-icon>
+                                      Attach File
+                                    </ion-button>                                  
+                                    <ion-input type="text" class="ion-text-wrap" formControlName="fileName" value="{{ fileinput?.files[0]?.name }}"  *ngIf=!filenameDisplayFlag readonly></ion-input>
+                                    <ion-input type="text" class="ion-text-wrap" formControlName="fileName"  *ngIf=filenameDisplayFlag readonly></ion-input>
+                                    
+                                    <ion-icon name="download" slot="end" color="primary" (click)="downloadAttachment(details.controls.findingRptAttachs,k)"></ion-icon>
+                                  </ion-item>
+
+                          </div>
+                          </div>
+                      </div>
+                      <br>
+                       
+                    </div>
+
+
+                  </div>
+                  <!-- </fieldset>  -->
+                </div>
+                <!-- <button (click)="addFindingDetail(find.controls.findingDetail)">Add Finding Details</button> -->
+              </div>
+            </div>
+          </div>
+        </ion-card>
+
+        <!--   <fieldset>
+        <legend><h3>Finding {{i+1}}: </h3></legend>
+        <div [formGroupName]="i">
+          <label>FInding Name: </label>
+          <input formControlName="displayFinging" /> <span><button (click)="deleteFindings(i)">Delete Findings</button></span>
+          <div formArrayName="findingDetail">
+            <div *ngFor="let details of find.get('findingDetail').controls; let j=index">
+              <fieldset>
+              <legend><h4>details {{j+1}}</h4></legend>
+              <div [formGroupName]="j">
+                <label>serialNo:</label>
+                <input formControlName="serialNo" /> <span><button (click)="deleteFindingDetail(find.controls.findingDetail, j)">Delete FindingDetails</button></span> 
+                
+                <div formArrayName="findingRptAttachs">
+                  <div *ngFor="let attach of details.get('findingRptAttachs').controls; let k=index">
+                    <fieldset>
+                    <legend><h4>attach {{k+1}}</h4></legend>
+                    <div [formGroupName]="k">
+                      <label>filename:</label>
+                      <input formControlName="fileName" /> <span><button (click)="deleteFindingAttachments(details.controls.findingRptAttachs, k)">Delete Project</button></span> 
+      
+                      
+                    </div>
+                    </fieldset>
+                  </div>
+                  <button (click)="addFindingReports(details.controls.findingRptAttachs)">Add Finding Attachments</button>
+                </div>
+
+
+              </div>
+              </fieldset>
+            </div>
+            <button (click)="addFindingDetail(find.controls.findingDetail)">Add Finding Details</button>
+          </div>
+        </div>
+      </fieldset> -->
+      </div>
+    </div><br>
+
+  </form>
+
+  <!-- <pre>{{findingsForm.value | json}}</pre> -->
+</ion-content>

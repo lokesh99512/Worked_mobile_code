@@ -1,0 +1,27 @@
+/* Border */
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #0d8290;
+  }
+  /* Font color */
+  input.mat-input-element {
+    color: black;
+  }
+  //input outline color
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #0d8290;
+    // opacity: 1!important;
+}
+//mat-input focused color
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #0d8290!important;
+}
+// mat-label normal state style
+::ng-deep .mat-form-field-label {
+    color: rgba(0,0,0,.6)!important;
+    // color: $mainColor!important;
+}
+
+// mat-label focused style
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color:  #0d8290!important;
+}

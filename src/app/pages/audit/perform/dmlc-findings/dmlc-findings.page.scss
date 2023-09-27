@@ -1,0 +1,28 @@
+hr {
+    border: none;
+    border-bottom: 1px dashed lightgray;
+    color: #fff;
+    margin-bottom: 4px;
+    background-color: #fff;
+    //height:1px;
+    // width:50%;
+}
+
+ion-icon {
+    //--ionicon-stroke-width: 16px;
+    font-size: 16px;
+}
+
+ion-item-divider {
+    min-height: 1px !important;
+}
+
+.ripple-parent {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-content-ios {
+    padding-inline-start: 16px !important;
+    padding-inline-end: 16px !important;
+}

@@ -1,0 +1,1893 @@
+<ion-header no-border class="header">
+  <ion-toolbar>
+    <!-- <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons> -->
+    <!-- /**added by archana for back button implementation */ -->
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="goBack()" style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="text-align: center;">
+      {{ auditType_Title +' Details '+ auditTypeTitle}}
+    </ion-title>
+
+    <ion-icon name="alert-circle" slot="end" class="filterIcon" slot="end" (click)="findinginfo()"
+      style="margin-right: 10px;"></ion-icon>
+      <!-- changed by @ramya on 14-06-22 for jira id - mobile-560 -->
+           <!-- added by @archana on 27-06-2022 for jira id - MOBILE-525 -->
+      <ion-icon slot="end" *ngIf='!dirInterOrAdd && auditTypeTitle != "DMLC II"' class="ion-activatable ripple-parent" name="sync-sharp" (click)="auditCycleBtn()"
+      style="zoom: 1.7;margin-right: 12px;">
+      <ion-ripple-effect></ion-ripple-effect>
+    </ion-icon>
+    <ion-icon slot="end" name="ellipsis-vertical-sharp" (click)="presentActionSheet()"
+      style="zoom: 1.7;margin-right: 6px;"></ion-icon>
+
+    <!-- <ion-icon slot="end" name="md-more" (click)="presentPopover(ev)" style="zoom: 1.5;"></ion-icon> 
+
+  <ion-icon name="create" slot="end" class="filterIcon" style="padding-right: 10px;"
+      (click)="currentFinding()"></ion-icon>
+  <ion-icon name="save" slot="end" class="filterIcon" style="padding-right: 5px;"
+      (click)="auditDataForm.ngSubmit.emit()"></ion-icon> -->
+
+
+
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="content">
+  <super-tabs (tabChange)="onTabChange($event)">
+    <super-tabs-toolbar position="top" scrollable [scrollablePadding]="0"
+      style="background:linear-gradient(90deg, #350536,#0c8390); color: white;">
+      <super-tab-button (click)="vesseldisplays()">
+        <ion-label class="ionLabel">VESSEL / COMPANY</ion-label><!--modified by lokesh for jira_id(38)-->
+      </super-tab-button>
+      <super-tab-button (click)="vesseldisplays()">
+        <ion-label class="ionLabel">{{auditType_Title}} / CERTIFICATE</ion-label><!--modified by lokesh for jira_id(38)-->
+      </super-tab-button>
+      <super-tab-button (click)="vesseldisplays()">
+        <ion-label class="ionLabel">ATTACHMENT TO THIS REPORT</ion-label><!--modified by lokesh for jira_id(38)-->
+      </super-tab-button>
+      <super-tab-button (click)="vesseldisplays()">
+        <ion-label class="ionLabel">{{auditType_Title}} SUMMARY</ion-label><!--modified by lokesh for jira_id(38)-->
+      </super-tab-button>
+      <super-tab-button (click)="vesseldisplays()">
+        <ion-label class="ionLabel">NARRATIVE REPORT / SUMMARY</ion-label><!--modified by lokesh for jira_id(38)-->
+      </super-tab-button>
+      <super-tab-button (click)="vesseldisplays()" *ngIf='isDMLC'>
+        <ion-label class="ionLabel">LETTER HISTORY</ion-label>
+      </super-tab-button>
+    </super-tabs-toolbar>
+
+    <super-tabs-container>
+      <super-tab *ngIf='!vesselDetails'>
+        <ion-content class="ionContent">
+          <div>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+              <div formArrayName="vesselData">
+
+                <ion-grid [formGroupName]="i"
+                  *ngFor="let vessel of auditData.controls.vesselData.controls; let i = index">
+
+                  <ion-card style="background: white;" *ngIf='!vessel.valid'>
+                    <ion-grid style="padding: 0px;margin: 0px 0;">
+                      <ion-row
+                        style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+                        <ion-col size="11">
+                          <ion-input type="text" readonly style="color: white;"
+                            value='Vessel Information Missing , Refresh Master data'></ion-input>
+                        </ion-col>
+                        <ion-col size="1" class="ion-text-end"
+                          style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+                          <ion-icon name="close-circle" color="light"></ion-icon>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card>
+
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Vessel IMO Number</ion-label>
+                        <ion-input type="number" formControlName='vesselImoNo' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.vesselImoNo==='' || vessel.value.vesselImoNo === null || vessel.value.vesselImoNo === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Vessel IMO Number required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Vessel Type</ion-label>
+                        <ion-input type="text" formControlName='vesselType' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.vesselType==='' || vessel.value.vesselType === null || vessel.value.vesselType === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Vessel Type required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Vessel Name</ion-label>
+                        <ion-input type="text" formControlName='vesselName' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.vesselName==='' || vessel.value.vesselName === null || vessel.value.vesselName === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Vessel Name required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Offical Number</ion-label>
+                        <ion-input type="text" formControlName='officialNo' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.officialNo==='' || vessel.value.officialNo === null || vessel.value.officialNo === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Offical Number required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">GRT(MT)</ion-label>
+                        <ion-input type="text" formControlName='grt' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.grt==='' || vessel.value.grt === null || vessel.value.grt === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              GRT(MT) required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Company IMO Number</ion-label>
+                        <ion-input type="text" formControlName='companyImoNo' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.companyImoNo ==='' || vessel.value.companyImoNo === null || vessel.value.companyImoNo === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Company IMO Number required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">DOC Type</ion-label>
+                        <ion-input type="text" formControlName='docTypeNo' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.docTypeNo ==='' || vessel.value.docTypeNo === null || vessel.value.docTypeNo === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              DOC Type & Number required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">DOC Issuer</ion-label>
+                        <ion-input type="text" formControlName='docIssuer' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.docIssuer==='' || vessel.value.docIssuer === null || vessel.value.docIssuer === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              DOC Issuer required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Doc Expiry</ion-label>
+                        <!-- <ion-input type="date" formControlName='docExpiry' readonly></ion-input> -->
+                        <mat-form-field class="dateinput" (click)="docExpiry.open()">
+                          <ion-input>
+                            <input #docexpiryInput matInput readonly [matDatepicker]="docExpiry" mode="ios"
+                              formControlName='docExpiry'>
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="docExpiry"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #docExpiry disabled>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(docexpiryInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='docExpiry' readonly></ion-datetime> -->
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.docExpiry==='' || vessel.value.docExpiry === null || vessel.value.docExpiry === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Doc Expiry required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <!-- changed by @Ramya on 15-06-2022 for jira id - mobile-453 -->
+                      <ion-item lines="none" class="ionIten">
+                        <ion-label position="stacked" color="medium">Name / Address of Company</ion-label>
+                        </ion-item>
+                        <ion-item class="ionIten">
+                        <ion-textarea autoGrow='true' formControlName='companyName' readonly></ion-textarea>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.companyName==='' || vessel.value.companyName === null || vessel.value.companyName === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Name / Address of Company Required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12"
+                      *ngIf='this.data.auditData[0].auditTypeId == 1003'>
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Date of Registry</ion-label>
+                        <!-- <ion-input type="date" formControlName='dateOfRegistry' readonly></ion-input> -->
+                        <mat-form-field class="dateinput" (click)="dateOfRegistry.open()">
+                          <ion-input>
+                            <input #dateofregistryInput matInput readonly [matDatepicker]="dateOfRegistry" mode="ios"
+                              formControlName='dateOfRegistry'>
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="dateOfRegistry"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #dateOfRegistry disabled>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(dateofregistryInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='dateOfRegistry' readonly></ion-datetime> -->
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="vessel.value.dateOfRegistry==='' || vessel.value.dateOfRegistry === null || vessel.value.dateOfRegistry === 'undefined' ">
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Date of Registry required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+
+      <super-tab *ngIf='!vesselDetails'>
+        <ion-content class="ionContent">
+          <div *ngIf='!isDMLC'>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+              <div formArrayName="auditDetails">
+                <ion-grid [formGroupName]="i"
+                  *ngFor="let audit of auditData.controls.auditDetails.controls; let i = index">
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{userTypeName}} Name</ion-label>
+                        <ion-input type="text" formControlName='auditorName' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditorName ==='' || audit.value.auditorName === null || audit.value.auditorName === 'undefined' ">
+                          <!-- <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{userTypeName}} Name required -->
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{userTypeName}} Name required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{userTypeName}} Id</ion-label>
+                        <ion-input type="number" formControlName='auditorId' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditorId ==='' || audit.value.auditorId === null || audit.value.auditorId === 'undefined' ">
+                          <!-- <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{userTypeName}} Id required -->
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{userTypeName}} Id required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Report No.</ion-label>
+                        <ion-input type="number" formControlName='auditReportNo' readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditReportNo ==='' ||audit.value.auditReportNo === null || audit.value.auditReportNo === 'undefined' ">
+                          <!-- <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{typeName}} Report No required -->
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{typeName}} Report No required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Sub Type</ion-label>
+                        <ion-input type="text" formControlName='auditSubType' value={{subTypeValue}} readonly>
+                        </ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditSubType ==='' ||audit.value.auditSubType === null || audit.value.auditSubType === 'undefined' ">
+                          <!-- <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{typeName}} Report No required -->
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{typeName}} Sub type required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Scope</ion-label>
+                        <ion-input type="text" formControlName='scope' value={{scopeValue}} readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.scope==='' || audit.value.scope === null || audit.value.scope === 'undefined' ">
+                          <!-- <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Scope required -->
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              Scope required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium" style="margin: bottom -15px;">{{typeName}} Date
+                        </ion-label>
+                        <!-- <ion-input type="date" formControlName='auditDate'></ion-input> -->
+                        <mat-form-field class="dateinput" (click)="auditDate.open()">
+                          <ion-input>
+                            <input matInput readonly [matDatepicker]="auditDate" mode="ios" [min]='minAuditDate'
+                              formControlName='auditDate' (dateChange)="auditDateChange($event,i, audit)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="auditDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #auditDate [disabled]="this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="auditDateclear($event,i,audit)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='auditDate' (ionChange)="auditDateChange($event,i, audit)"></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditDate==='' ||audit.value.auditDate === null || audit.value.auditDate === 'undefined' ">
+                           <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{typeName}} Date required 
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{typeName}} Date required
+                            </ion-col>
+                          </ion-row>
+                        </div> 
+                      </div>-->
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten" no-border>
+                        <ion-label position="stacked" color="medium">{{typeName}} Place</ion-label>
+                        <mat-form-field class="example-full-width"><!--modifed by lokesh for jira_id(768)-->
+                          <textarea type="text" matInput formControlName='auditPlace'
+                            (input)="filterAuditPort($event.target.value)" [matAutocomplete]="auto" position='below'
+                            [readonly]="this.statusComplete == 1002"></textarea>
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                              {{option}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.auditPlace==='' ||audit.value.auditPlace === null || audit.value.auditPlace === 'undefined' ">
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{typeName}} Place required
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                 <ion-col size='10'>
+                                      {{typeName}} Place required
+                                    </ion-col>                                                                             
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+
+                    <!-- <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                    <ion-item class="ionIten">
+                        <ion-label position="stacked" color="dark">Audit Place</ion-label>
+                        <ionic-selectable item-content [items]="filteredOptions | async" [canSearch]="true" formControlName='auditPlace' 
+                        [hasInfiniteScroll]="true" closeButtonSlot="end">                          
+                        </ionic-selectable>
+                      </ion-item>
+                    </ion-col> -->
+
+
+                    <!--<ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Status</ion-label>
+                        <ion-input type="text" formControlName='auditStatus' value={{statusValue}} readonly></ion-input>
+                      </ion-item>
+
+                      <div class="validation-errors">
+                        <div class="error-message"
+                          *ngIf="audit.value.auditStatus==='' ||audit.value.auditStatus === null || audit.value.auditStatus === 'undefined' ">
+                           <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{typeName}} Status required 
+                          <ion-row>
+                            <ion-col size='1'>
+                              <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline"></ion-icon>
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                              {{typeName}} Status required
+                            </ion-col>
+                          </ion-row>
+                        </div>
+                      </div>-->
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+
+                      <ion-item class="ionIten">
+
+                        <ion-label position="stacked" color="medium">{{typeName}} Status</ion-label>
+
+                        <ion-select mode="md" class="dropdown" matNativeControl formControlName='auditStatus'
+                            [(ngModel)]='auditStatusValue' (ngModelChange)="completeStatusCheck($event)">><!--modified by lokesh for jira_id(607)-->
+                            <!--   <option *ngFor="let method of auditStatusArray">{{ method.auditStatusDesc }}</option>
+                           <option value="1001">COMMENCED</option>
+                             <option value="1002">COMPLETED</option> -->
+                            <ion-select-option [value]="1001" [selected]="auditStatusValue ==1001">COMMENCED</ion-select-option>
+                            <ion-select-option [value]="1002" [selected]="auditStatusValue ==1002">COMPLETED</ion-select-option>
+                          </ion-select>
+                      </ion-item>
+                    </ion-col>
+
+                    <!-- </ion-col> -->
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Certificate No</ion-label>
+                        <ion-input type="text" formControlName='certificateNo' [disabled]="this.halfScope == 1001"
+                          readonly></ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.certificateNo ==='' ||audit.value.certificateNo === null || audit.value.certificateNo === 'undefined' ">
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Certificate No required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Certificate No required
+                                    </ion-col>                                                                            
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Certificate Issued</ion-label>
+                        <ion-input type="text" formControlName='certificateIssued' value={{certIssuedValue}}
+                          [disabled]="this.halfScope == 1001" readonly>
+                        </ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.certificateIssued==='' ||audit.value.certificateIssued === null || audit.value.certificateIssued === 'undefined' ">
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Certificate Issued required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Certificate Issued required
+                                    </ion-col>                                                                            
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Issue Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='issueDate' readonly></ion-input> -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="issueDate.open()">
+                          <!--ion-content removed by sudharsan for JIRA-ID=Mobile:402-->
+                            <input #issueInput matInput readonly [matDatepicker]="issueDate" mode="ios" style="padding:0.4em;"
+                              formControlName='issueDate' (dateChange)="issueDateChange($event,i)">
+                          
+                          <mat-datepicker-toggle matSuffix [for]="issueDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #issueDate
+                            [disabled]="readonlyFormFields || this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearAuditdate('issueDate',i)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='issueDate'  (ionChange)="issueDateChange($event,i,audit)" [readonly]='isReadonly'
+                        [disabled]='audit.value.certificateIssued == appConstant.RENEWAL_ENDORSED2'></ion-datetime> -->
+
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.issueDate==='' ||audit.value.issueDate === null || audit.value.issueDate === 'undefined' " >
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Issue Date required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Issue Date required
+                                    </ion-col>                                                                            
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Expiry Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='expiryDate' readonly></ion-input> -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="expiryDate.open()">
+                            <!--ion-content removed by sudharsan for JIRA-ID=Mobile:402-->
+                            <input #expiryInput matInput [matDatepicker]="expiryDate" mode="ios" style="padding:0.4em;"
+                              formControlName='expiryDate' readonly>
+                          
+                          <mat-datepicker-toggle matSuffix [for]="expiryDate" ></mat-datepicker-toggle>
+                          <!-- <ngx-mat-datetime-picker #auditDate></ngx-mat-datetime-picker> -->
+                          <mat-datepicker [touchUi]="isMobile" #expiryDate
+                            [disabled]="readonlyFormFields || this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearAuditdate('expiryDate',i)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='expiryDate' [readonly]='isReadonly'
+                        [disabled]='audit.value.certificateIssued == appConstant.RENEWAL_ENDORSED2'></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.expiryDate==='' ||audit.value.expiryDate === null || audit.value.expiryDate === 'undefined' ">
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Expiry Date required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Expiry Date required
+                                    </ion-col>                                                                            
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Internal {{typeName}} Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='interalAuditDate'></ion-input> -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="interalAuditDate.open()">
+                            <!--ion-content removed by sudharsan for JIRA-ID=Mobile:402-->
+                            <input matInput readonly [matDatepicker]="interalAuditDate" mode="ios" [disabled]="omdFlag" style="padding:0.4em;"
+                              [min]='minInternalAuditDate' [max]='maxInternalAuditDate'
+                              [placeholder]='auditDtlPlaceholder' formControlName='interalAuditDate'
+                              (dateChange)="internalAuditDateChange($event,i,audit)"
+                              [disabled]='audit.value.certificateIssued == appConstant.RENEWAL_ENDORSED2'>
+                          
+                          <mat-datepicker-toggle matSuffix [for]="interalAuditDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #interalAuditDate
+                            [disabled]="this.halfScope != 1001 && omdFlag ||this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearAuditdate('interalAuditDate',i)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" mode="ios" formControlName='internalAuditDate'
+                        [disabled]="omdFlag" [min]='minInternalAuditDate' [max]='maxInternalAuditDate' [placeholder]='auditDtlPlaceholder' 
+                        (ionChange)="internalAuditDateChange($event,i,audit)"></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors" *ngIf='!omdFlag'>                          
+                            <div class="error-message" *ngIf="audit.value.internalAuditDate==='' ||audit.value.internalAuditDate === null || audit.value.internalAuditDate === 'undefined' ">
+                                <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Internal {{typeName}} Date required 
+                                <ion-row>
+                                    <ion-col size='1'>
+                                        <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                    </ion-col>
+                                    <ion-col size='1'>
+  
+                                    </ion-col>
+                                    <ion-col size='10'>
+                                        Internal {{typeName}} Date required
+                                      </ion-col>                                                                            
+                                </ion-row>
+                            </div>                        
+                      </div> -->
+
+                      <!-- <ion-item *ngIf="audit.value.internalAuditDate==='' ||audit.value.internalAuditDate === null || audit.value.internalAuditDate === 'undefined' ">
+                          <ion-icon style="color:#cc0033" name="information-circle-outline" slot="start"></ion-icon>
+                          <ion-label class="error-message">Internal {{typeName}} Date required</ion-label>
+                      </ion-item> -->
+                    </ion-col>
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium" class="labelalign">Opening Meeting Date
+                        </ion-label>
+                        <!-- <ion-input type="date" formControlName='openMeetingDate'></ion-input> -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="openMeetingDate.open()">
+                            <!--ion-content removed by sudharsan for JIRA-ID=Mobile:402-->
+                            <input matInput readonly mode="ios" [max]="maxOpenMeetingDate" [min]="minOpenMeetingDate"style="padding:0.4em;"
+                              [ngxMatDatetimePicker]="openMeetingDate" formControlName='openMeetingDate'
+                              (dateChange)="omdChange($event,i,audit)">
+                          
+                          <mat-datepicker-toggle [touchUi]="isMobile" matSuffix [for]="openMeetingDate"class="dateicon">
+                          </mat-datepicker-toggle>
+                          <ngx-mat-datetime-picker #openMeetingDate [disabled]="this.statusComplete == 1002">
+                          </ngx-mat-datetime-picker>
+                          <mat-datepicker [touchUi]="isMobile" #openMeetingDate>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY HH:mm " pickerFormat="DD-MMM-YYYY HH:mm A" mode="ios" formControlName='openMeetingDate' (ionChange)="omdChange($event,i,audit)"
+                        [max]='maxIAD'></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf=" audit.value.openMeetingDate==='' ||audit.value.openMeetingDate === null || audit.value.openMeetingDate === 'undefined'    " >
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Opening Meeting Date required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                   <ion-col size='10'>
+                                      Open Meeting Date required
+                                    </ion-col>                                                                             
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium" class="labelalign">Closing Meeting Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='closeMeetingDate'></ion-input> -->
+                         <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="closeMeetingDate.open()">
+                            <!--ion-content removed by sudharsan for JIRA-ID=Mobile:402-->
+                            <input class="dateinput" matInput readonly mode="ios" [max]="maxCloseMeetingDate" style="padding:0.4em;"
+                              [min]="minCloseMeetingDate" [ngxMatDatetimePicker]="closeMeetingDate"
+                              formControlName='closeMeetingDate' (dateChange)="cmdChange($event,i,audit)">
+                          
+                          <mat-datepicker-toggle matSuffix [for]="closeMeetingDate" class="dateicon">
+                          </mat-datepicker-toggle>
+                          <ngx-mat-datetime-picker #closeMeetingDate
+                            [disabled]="this.statusComplete == 1002 || omdFlag">
+                          </ngx-mat-datetime-picker>
+                          <mat-datepicker [touchUi]="isMobile" #closeMeetingDate>
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY HH:mm " pickerFormat="DD-MMM-YY HH:mm A" mode="ios" formControlName='closeMeetingDate' (ionChange)="cmdChange($event,i,audit)"
+                        [disabled]='omdFlag' [max]='maxIAD'></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors" *ngIf='!omdFlag'>                          
+                          <div class="error-message" *ngIf=" audit.value.closeMeetingDate==='' ||audit.value.closeMeetingDate === null || audit.value.closeMeetingDate === 'undefined' ">
+                              <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> Closing Meeting Date required 
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Closing Meeting Date required
+                                    </ion-col>                                                                             
+                              </ion-row>
+                          </div>                        
+                      </div> -->
+
+                    </ion-col>
+                    <div formArrayName="sspDetails" *ngIf='sspDetailsFormEnable'>
+                      <ion-grid [formGroupName]="j"
+                        *ngFor="let ssp of audit.get('sspDetails')['controls']; let j=index">
+                        <ion-row>
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium"> {{reviewTypeName}} Report No </ion-label>
+                              <!-- type="text" added by archana for jira id-MOBILE-627 -->
+                              <ion-input type="text" pattern="[0-9]*" [(ngModel)]='sspReportNo' inputmode="numeric"
+                                formControlName='sspReportNo' 
+                                [readonly]="this.statusComplete == 1002 || this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!=''">
+                                <!-- this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!='' code added by archana for jira id MOBILE-604,MOBILE-614 -->
+                                <!-- code removed to fix MOBILE-530 by kiran  -->
+                              </ion-input>
+                            </ion-item>
+
+                            <!-- <div class="validation-errors">                          
+                                <div class="error-message" *ngIf="audit.value.auditSubType != 1001 && ssp.value.sspReportNo==='' || ssp.value.sspReportNo === null || ssp.value.sspReportNo === 'undefined' ">
+                                    <ion-icon style="color:#cc0033;" name="information-circle-outline" slot="start"></ion-icon> {{reviewTypeName}} Report No required 
+                                    <ion-row>
+                                        <ion-col size='1'>
+                                            <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                        </ion-col>
+                                        <ion-col size='1'>
+  
+                                        </ion-col>
+                                        <ion-col size='10'>
+                                            {{reviewTypeName}} Report No required
+                                          </ion-col>                                                                            
+                                    </ion-row>
+                                </div>                       
+                            </div> -->
+
+                          </ion-col>
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium">{{reviewTypeName}} {{userTypeName}} Name
+                              </ion-label>
+                              <ion-input type="text" [(ngModel)]='sspLeadName' formControlName='sspAuditorName'
+                                (ionInput)="numberOnlyValidation($event)" 
+                                pattern="[a-zA-Z ]*" [readonly]="this.statusComplete == 1002 || this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!=''">
+                                <!-- this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!='' code added by archana for jira id MOBILE-604,MOBILE-614 -->
+                                <!-- code removed to fix MOBILE-530 by kiran  -->
+                              </ion-input>
+                            </ion-item>
+                            <!-- <span class="error ion-padding" *ngIf="geterrorControl(i).controls['value'].hasError('sspAuditorName')">
+                              Please provide valid email id.
+                            </span> -->
+
+                            <div class="validation-errors">
+                              <div class="error-message" *ngIf="ssp.get('sspAuditorName').hasError('pattern') ">
+
+                                <ion-row>
+                                  <ion-col size='1'>
+                                    <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline">
+                                    </ion-icon>
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                    enter valid Name
+                                  </ion-col>
+                                </ion-row>
+                              </div>
+                            </div>
+
+                          </ion-col>
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium"> {{reviewTypeName}} Revision No</ion-label>
+                              <ion-input type="text" [(ngModel)]='sspRevisionNo' formControlName='sspRevisionNo'
+                              [readonly]="this.statusComplete == 1002 || this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!=''">
+                                <!-- this.data.auditData[0].sspDetailsData.sspDmlcAuditSeqNo!='' code added by archana for jira id MOBILE-604,MOBILE-614 -->
+                                <!-- code removed to fix MOBILE-530 by kiran  -->
+                              </ion-input>
+                            </ion-item>
+
+                            <!-- <div class="validation-errors">                          
+                                <div class="error-message" *ngIf=" audit.value.auditSubType != 1001 && ssp.value.sspRevisionNo==='' || ssp.value.sspRevisionNo === null || ssp.value.sspRevisionNo === 'undefined' ">
+                                  <ion-row>
+                                      <ion-col size='1'>
+                                          <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                      </ion-col>
+                                      <ion-col size='1'>
+
+                                      </ion-col>
+                                      <ion-col size='10'>
+                                          {{reviewTypeName}} Revision No required
+                                        </ion-col>                                                                            
+                                  </ion-row>                                  
+                                </div>                        
+                            </div> -->
+                          </ion-col>
+
+                        </ion-row>
+                      </ion-grid>
+                    </div>
+
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </form>
+          </div>
+
+          <div *ngIf='isDMLC'>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+              <div formArrayName="auditDetails">
+                <ion-grid [formGroupName]="i"
+                  *ngFor="let audit of auditData.controls.auditDetails.controls; let i = index">
+                  <ion-row>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{userTypeName}} Name</ion-label>
+                        <ion-input type="text" formControlName='auditorName' readonly></ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditorName==='' || audit.value.auditorName === null || audit.value.auditorName === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{userTypeName}} Name required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{userTypeName}} Id</ion-label>
+                        <ion-input type="number" formControlName='auditorId' readonly></ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditorId==='' || audit.value.auditorId === null || audit.value.auditorId === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{userTypeName}} Id required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Report No.</ion-label>
+                        <ion-input type="text" formControlName='auditReportNo' readonly></ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditReportNo==='' || audit.value.auditReportNo === null || audit.value.auditReportNo === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{typeName}} Report No required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Sub Type</ion-label>
+                        <ion-input type="text" formControlName='auditSubType' value={{subTypeValue}} readonly>
+                        </ion-input>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditSubType==='' || audit.value.auditSubType === null || audit.value.auditSubType === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{typeName}} Sub Type required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='auditDate'></ion-input> -->
+                        <!-- Removed By Lokesh  for alignments  JIRA-ID -- 533 -->
+                          <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="auditDate.open()">  
+                          <ion-input style="margin-bottom: 1px;">
+                            <input matInput readonly [matDatepicker]="auditDate" mode="ios" [min]='minReviewDate'
+                              formControlName='auditDate' (dateChange)="dmlcReviewDateChange($event,i,audit)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="auditDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #auditDate [disabled]="this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearAuditdate('auditDate',i)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" formControlName='auditDate' mode="ios" (ionChange)="dmlcReviewDateChange($event,i,audit)"></ion-datetime> -->
+
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditDate==='' || audit.value.auditDate === null || audit.value.auditDate === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{typeName}} Date required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten" no-border>
+                        <ion-label position="stacked" color="medium">{{typeName}} Place</ion-label>
+                        <mat-form-field class="example-full-width"><!--modifed by lokesh for jira_id(768)-->
+                          <textarea  type="text" matInput formControlName='auditPlace'
+                            (input)="filterAuditPort($event.target.value)" [matAutocomplete]="auto"
+                            [readonly]="this.statusComplete == 1002"></textarea>
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                              {{option}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.auditPlace==='' || audit.value.auditPlace === null || audit.value.auditPlace === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      {{typeName}} Place required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+                    <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">{{typeName}} Status</ion-label>
+                          <ion-select mode="md" class="dropdown" matNativeControl formControlName='auditStatus'
+                            [(ngModel)]='auditStatusValue' (ngModelChange)="completeStatusCheck($event)">><!--modified by lokesh for jira_id(607)-->
+                            <!--   <option *ngFor="let method of auditStatusArray">{{ method.auditStatusDesc }}</option>
+                           <option value="1001">COMMENCED</option>
+
+                            <option value="1002">COMPLETED</option> -->
+                            <ion-select-option [value]="1001" [selected]="auditStatusValue ==1001">COMMENCED</ion-select-option>
+                            <ion-select-option [value]="1002" [selected]="auditStatusValue ==1002">COMPLETED</ion-select-option>
+                          </ion-select>
+                        <!-- <ion-input type="text" formControlName='auditStatus' value={{statusValue}} readonly></ion-input> -->
+                      </ion-item>
+                    </ion-col>
+
+                    <!-- <div class="validation-errors">                          
+                          <div class="error-message" *ngIf="audit.value.auditStatus==='' || audit.value.auditStatus === null || audit.value.auditStatus === 'undefined' ">
+                            <ion-row>
+                                <ion-col size='1'>
+                                    <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                </ion-col>
+                                <ion-col size='1'>
+
+                                </ion-col>
+                                <ion-col size='10'>
+                                    {{typeName}} Status required
+                                  </ion-col>                                                                            
+                            </ion-row>                                  
+                          </div>                        
+                      </div> -->
+                        <!-- place changed by lokesh for jira_id(620)-->
+                      <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                        <ion-item>
+                          <ion-label position="stacked" color="medium">Letter No</ion-label>
+                          <ion-input type="text" formControlName='certificateNo' readonly></ion-input>
+                        </ion-item>
+  
+                        <!-- <div class="validation-errors">                          
+                              <div class="error-message" *ngIf="audit.value.certificateNo==='' || audit.value.certificateNo === null || audit.value.certificateNo === 'undefined' ">
+                                <ion-row>
+                                    <ion-col size='1'>
+                                        <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                    </ion-col>
+                                    <ion-col size='1'>
+    
+                                    </ion-col>
+                                    <ion-col size='10'>
+                                        Letter No required
+                                      </ion-col>                                                                            
+                                </ion-row>                                  
+                              </div>                        
+                          </div> -->
+  
+                      </ion-col>
+
+                  </ion-row>
+                  <ion-row>
+                   
+                    <!-- <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                        <ion-item class="ionIten">
+                          <ion-label position="stacked" color="medium">Certificate Issued</ion-label>
+                          <ion-input type="text" formControlName='certificateIssued' value={{certIssuedValue}} readonly></ion-input>
+                        </ion-item>
+                      </ion-col>
+                      <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                        <ion-item class="ionIten">
+                          <ion-label position="stacked" color="medium">Issue Date</ion-label>
+                          <ion-input type="date" formControlName='issueDate'></ion-input>
+                        </ion-item>
+                      </ion-col>
+                      <ion-col size-lg="6" size-md="6" size-sm="6" size="12">
+                        <ion-item class="ionIten">
+                          <ion-label position="stacked" color="medium">Expiry Date</ion-label>
+                          <ion-input type="date" formControlName='expiryDate'></ion-input>
+                        </ion-item>
+                      </ion-col> -->
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">Receipt Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='openMeetingDate'></ion-input> (ionChange)="dmlcReceiptDateChange($event,i,audit)" -->
+                          <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="openMeetingDate.open()">
+                          <ion-input>
+                            <input #receiptInput matInput readonly [matDatepicker]="openMeetingDate" mode="ios"
+                              [min]='minReceiptDate' formControlName='openMeetingDate'
+                              (dateChange)="dmlcReceiptDateChange($event,i,audit)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="openMeetingDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #openMeetingDate
+                            [disabled]="this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearAuditdate('openMeetingDate',i)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY"  formControlName='openMeetingDate' (ionChange)="dmlcReceiptDateChange($event,i,audit)"></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.openMeetingDate==='' || audit.value.openMeetingDate === null || audit.value.openMeetingDate === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+  
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      Receipt Date required
+                                  </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div> -->
+
+                    </ion-col>
+
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">DMLC II Issue Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='openMeetingDate'></ion-input> (ionChange)="dmlcReceiptDateChange($event,i,audit)" -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="closeMeetingDate.open()">
+                          <ion-input>
+                            <input #dmlcissueInput matInput readonly [matDatepicker]="closeMeetingDate" mode="ios"
+                              formControlName='closeMeetingDate' (dateChange)="dmlc2IssueDateChange($event,i,audit)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="closeMeetingDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #closeMeetingDate
+                            [disabled]="this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(dmlcissueInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+                      </ion-item>
+
+                    </ion-col>
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium"> DMLC II Revision No.</ion-label>
+                        <ion-input type="text" [(ngModel)]='sspRevisionNo' formControlName='sspRevisionNo'
+                          [disabled]="this.statusComplete == 1002"></ion-input>
+                      </ion-item>
+                    </ion-col>
+
+
+
+                    <!-- <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                        <ion-item class="ionIten">
+                          <ion-label position="stacked" color="medium">DMLC II Issue Date</ion-label>
+                          <!-- <ion-input type="date" formControlName='closeMeetingDate'></ion-input> -->
+                    <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" formControlName='closeMeetingDate'></ion-datetime>
+                        </ion-item>
+
+                        <div class="validation-errors">                          
+                            <div class="error-message" *ngIf="audit.value.closeMeetingDate==='' || audit.value.closeMeetingDate === null || audit.value.closeMeetingDate === 'undefined' ">
+                              <ion-row>
+                                  <ion-col size='1'>
+                                      <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                  </ion-col>
+                                  <ion-col size='1'>
+  
+                                  </ion-col>
+                                  <ion-col size='10'>
+                                      DMLC II Issue Date required
+                                    </ion-col>                                                                            
+                              </ion-row>                                  
+                            </div>                        
+                        </div>
+
+                      </ion-col> -->
+
+
+                    <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                      <ion-item class="ionIten">
+                        <ion-label position="stacked" color="medium">DMLC I Issue Date</ion-label>
+                        <!-- <ion-input type="date" formControlName='interalAuditDate'></ion-input> -->
+                        <!-- class name modified by lokesh for jira_id(725)-->
+                        <mat-form-field class="dateinputAudit" (click)="interalAuditDate.open()">
+                          <ion-input>
+                            <input #dmlciissueInput matInput readonly [matDatepicker]="interalAuditDate" mode="ios"
+                              formControlName='interalAuditDate' (dateChange)="dmlcIssueDateChange($event,i,audit)">
+                          </ion-input>
+                          <mat-datepicker-toggle matSuffix [for]="interalAuditDate"></mat-datepicker-toggle>
+                          <mat-datepicker [touchUi]="isMobile" #interalAuditDate
+                            [disabled]="this.statusComplete == 1002">
+                            <mat-datepicker-actions>
+                              <button mat-button matDatepickerCancel (click)="clearDate(dmlciissueInput)"
+                                color="secondary">Clear</button>
+                              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                            </mat-datepicker-actions>
+                          </mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <ion-datetime displayFormat="DD-MMM-YYYY" pickerFormat="DD-MMM-YYYY" formControlName='internalAuditDate'
+                             (ionChange)="dmlcIssueDateChange($event,i,audit)"></ion-datetime> -->
+                      </ion-item>
+
+                      <!-- <div class="validation-errors">                          
+                              <div class="error-message" *ngIf="audit.value.internalAuditDate==='' || audit.value.internalAuditDate === null || audit.value.internalAuditDate === 'undefined' ">
+                                <ion-row>
+                                    <ion-col size='1'>
+                                        <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                    </ion-col>
+                                    <ion-col size='1'>
+    
+                                    </ion-col>
+                                    <ion-col size='10'>
+                                        DMLC I Issue Date required
+                                      </ion-col>                                                                            
+                                </ion-row>                                  
+                              </div>                        
+                          </div> -->
+
+                    </ion-col>
+
+                    <!-- <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                              <ion-item class="ionIten">
+                                <ion-label position="stacked" color="medium"> {{reviewTypeName}} Revision No</ion-label>
+                                <ion-input type="text" readonly>{{sspRevisionNo}}</ion-input>
+                              </ion-item>
+                            </ion-col> -->
+
+
+
+
+
+                    <div formArrayName="sspDetails" *ngIf='sspDetailsFormEnable'>
+                      <ion-grid [formGroupName]="j" *ngFor="let ssp of audit.get('sspDetails').controls; let j=index">
+                        <ion-row>
+                          <!-- <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                              <ion-item class="ionIten">
+                                <ion-label position="stacked" color="medium"> {{reviewTypeName}} Report No</ion-label>
+                                <ion-input type="text" [(ngModel)]='sspReportNo' formControlName='sspReportNo'></ion-input>
+                              </ion-item>
+                            </ion-col>
+                            <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                              <ion-item class="ionIten">
+                                <ion-label position="stacked" color="medium">{{reviewTypeName}} {{userTypeName}} Name
+                                </ion-label>
+                                <ion-input type="text" [(ngModel)]='sspLeadName' formControlName='sspAuditorName'></ion-input>
+                              </ion-item>
+                            </ion-col> -->
+
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium"> {{reviewTypeName}} Revision No</ion-label>
+                              <ion-input type="text" [(ngModel)]='sspRevisionNo' formControlName='sspRevisionNo'>
+                              </ion-input>
+                            </ion-item>
+
+                            <!-- <div class="validation-errors">                          
+                                  <div class="error-message" *ngIf="ssp.value.sspRevisionNo==='' || ssp.value.sspRevisionNo === null || ssp.value.sspRevisionNo === 'undefined' ">
+                                    <ion-row>
+                                        <ion-col size='1'>
+                                            <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                                        </ion-col>
+                                        <ion-col size='1'>
+        
+                                        </ion-col>
+                                        <ion-col size='10'>
+                                            {{reviewTypeName}} Revision No required
+                                          </ion-col>                                                                            
+                                    </ion-row>                                  
+                                  </div>                        
+                              </div> -->
+
+                          </ion-col>
+
+                        </ion-row>
+                      </ion-grid>
+                    </div>
+
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </form>
+          </div>
+
+
+          <!-- <div *ngIf='isMLC'> 
+              <form [formGroup]='auditData' (ngSubmit)="save(auditData.value)" #auditDataForm="ngForm">
+                <div formArrayName="sspDetails">
+                  <ion-grid [formGroupName]="i" *ngFor="let ssp of auditData.controls.sspDetails.controls; let i = index">
+                    <ion-row>
+                      <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium">Rerport No</ion-label>
+                              <ion-input type="text" formControlName='sspReportNo'></ion-input>
+                            </ion-item>
+                          </ion-col>
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium">Auditor Name</ion-label>
+                              <ion-input type="date" formControlName='sspAuditorName'></ion-input>
+                            </ion-item>
+                          </ion-col>
+                          <ion-col size-lg="12" size-md="12" size-sm="12" size="12">
+                            <ion-item class="ionIten">
+                              <ion-label position="stacked" color="medium">Revision No</ion-label>
+                              <ion-input type="date" formControlName='sspRevisionNo'></ion-input>
+                            </ion-item>
+                          </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </div>
+              </form>
+            </div> -->
+
+        </ion-content>
+      </super-tab>
+
+      <super-tab *ngIf='!vesselDetails'>
+        <ion-content no-bounce has-bouncing="false" forceOverscroll="false" class="ionContent">
+          <div>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="6">
+                  </ion-col>
+                  <ion-col size="6" style="color: #0c8390;">
+                    <!-- <ion-input type="file" style="opacity: 0;position: relative;"></ion-input> -->
+                    <ion-button type="button" fill="outline" mode="ios" size="small" style="color: #0c8390;"
+                      (click)='addOthersAttachment()' [disabled]="this.statusComplete == 1002">
+                      <ion-icon name="add-circle" slot="start" style="color: #0c8390;"></ion-icon>
+                      Add New Attachments
+                    </ion-button>
+                    <!-- <ion-chip color="primary"
+                        style="width: 100%;background-color: rgb(30, 125, 233);position: absolute;top: 0;" (click)='addOthersAttachment()'>
+                        <ion-label style="margin-left: auto;margin-right: auto;color: white;" > Add New Attachments</ion-label>
+                      </ion-chip> -->
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+
+              <div *ngFor="let attachments of reportData; let i = index" class="ionIten">
+                <ion-card style="background:white;">
+
+                  <ion-item lines="none" style="--background: transparent;">
+                    <ion-label color="dark" style="font-weight: bold;width: 100%;">
+                      {{attachments.attachmentTypeDesc}}<span class='mandatory'
+                        *ngIf='attachments.mandatory === 1 && !attachments.fileName'><sup> *</sup></span></ion-label><!--added by lokesh for jira_id(803)-->
+                      <!--changed by Archana 24/06/2022 ID = MOBILE-547-->
+                    <ion-button fill="clear" class="attach-btn-delete" *ngIf="attachments.attachmentTypeDesc==='OTHER'" slot="end"
+                      [disabled]="this.statusComplete == 1002"
+                      (click)='removeOtherAttachments(i,attachments)'>
+                      <ion-icon slot="icon-only" name='trash-outline'></ion-icon>
+                    </ion-button>
+                     <!--changed by @Archana 10/06/2022 ID = MOBILE-581-->
+                    <ion-button fill="clear" class="attach-btn-delete" color="danger" *ngIf="attachments.attachmentTypeDesc!='OTHER'"
+                      slot="end" [disabled]="!attachments.fileName || this.statusComplete == 1002"
+                      (click)='removeAttachedFile(i,attachments)'>
+                      <ion-icon slot="icon-only" name='trash-outline'></ion-icon>
+                    </ion-button>
+
+                    <!--  <button class="attach-btn-delete" type="button" *ngIf="attachments.attachmentTypeDesc==='OTHER'" slot="end"
+                      [disabled]="attachments.fileName=='' || attachments.otherType=='' || this.statusComplete == 1002"
+                      (click)='removeOtherAttachments(i,attachments)'
+                      style="background: transparent;font-size: medium;">
+                      <ion-icon class="attach-icon-delete" style='color:#ff726f;margin-top: 10px;' name='trash-outline'></ion-icon>
+                    </button>
+
+
+                    <button class="attach-btn-delete" type="button" *ngIf="attachments.attachmentTypeDesc!='OTHER'" slot="end"
+                      [disabled]="!attachments.fileName || this.statusComplete == 1002"
+                      (click)='removeAttachedFile(i,attachments)' style="background: transparent;font-size: medium;">
+                      <ion-icon  [disabled]="!attachments.fileName || this.statusComplete == 1002" class="attach-icon-delete"  name='trash-outline'></ion-icon>
+                    </button> -->
+                  </ion-item>
+
+                  <!-- (click)="onInputClick(attachments.seqNo,i,type)" -->
+                  <!--  accept="image/*" -->
+                  <input type="file" #fileinput style="display: none;" (change)="fileChanged($event,attachments.seqNo)"
+                    (click)="$event.target.value=null;onInputClick(attachments.seqNo,i,type)"
+                    name={{attachments.attachmentTypeDesc}}>
+                  <ion-item lines="none" style="--background: transparent;">
+
+
+                    <ion-button type="button" fill="outline" mode="ios" size="small" color="primary"
+                      (click)="fileinput.click()" [disabled]="this.statusComplete == 1002">
+                      <ion-icon name="attach" slot="start"></ion-icon>
+                      Attach File
+                    </ion-button>
+                    <ion-label class="ion-text-wrap" style="margin: 0 20px;">{{attachments.fileName}}</ion-label>
+
+                    <!-- <ion-icon name="download-outline" slot="end" color="primary"
+                      (click)="downloadAttachment(attachments,i)"></ion-icon> -->
+
+                       <!--changed by @Archana 10/06/2022 ID = MOBILE-581-->
+                    <ion-button fill="clear" class="attach-btn-download" slot="end"
+                      [disabled]="attachments.fileName=='' || this.statusComplete == 1002"
+                      (click)='downloadAttachment(attachments,i)'>
+                      <ion-icon slot="icon-only" name='download-outline'></ion-icon>
+                    </ion-button>
+
+                  </ion-item>
+                  <!--changed by @Archana 10/06/2022 ID = MOBILE-546-->
+                  <ion-item *ngIf="attachments.attachmentTypeDesc==='OTHER'" style="--background: transparent;">
+                    <!-- custom-maxlength [charMaxLength]="30" maxlength = "31" added by archana for jira id-MOBILE-642  -->
+                    <ion-input *ngIf="!this.isIOS" placeholder="Enter Type Name" (ionInput)='getOtherTypeAttachName($event,i)'
+                      [disabled]="this.statusComplete == 1002" custom-maxlength [charMaxLength]="30"
+                      [value]="attachments.attachmentTypeDesc==='OTHER' ? attachments.otherType : ''"></ion-input>
+                    
+                    <ion-input *ngIf="this.isIOS" placeholder="Enter Type Name" (ionChange)='getOtherTypeAttachName($event,i)'
+                      [disabled]="this.statusComplete == 1002" maxlength = "31"
+                      [value]="attachments.attachmentTypeDesc==='OTHER' ? attachments.otherType : ''"></ion-input>
+                  </ion-item>
+                  <ion-item *ngIf="!this.isIOS" style="--background: transparent;" lines="none">
+                    <!-- ionChange added by archana for jira id=MOBILE-497 -->
+                    <ion-label position="stacked">Comments :</ion-label> <!--modifed by lokesh for jira_id(762)-->  <!-- changed by Ramya for jira id - MOBILE-702 -->
+                    <ion-textarea autoGrow='true'
+                      [disabled]="attachments.fileName=='' || this.statusComplete == 1002" custom-maxlength [charMaxLength]="2000"
+                      (ionChange)='attachmentsComments($event,i,attachments.attachmentTypeDesc,attachments.companyId,attachments.userIns)'
+                      [value]="attachments.commants"></ion-textarea>
+                  </ion-item>
+                  <!-- added by lokesh for jira_id(726)-->
+                  <ion-item *ngIf="this.isIOS" style="--background: transparent;" lines="none">
+                    <ion-label position="stacked">Comments :</ion-label>
+                    <ion-textarea autoGrow='true'
+                      [disabled]="attachments.fileName=='' || this.statusComplete == 1002" maxlength="2001"
+                      (ionChange)='attachmentsComments($event,i,attachments.attachmentTypeDesc,attachments.companyId,attachments.userIns)'
+                      [value]="attachments.commants"></ion-textarea>
+                  </ion-item>
+                </ion-card>
+
+
+              </div>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+
+      <super-tab *ngIf='!vesselDetails'>
+        <ion-content class="ionContent">
+          <div>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+              <div formArrayName="summaryDetails">
+
+                <ion-card style="background: white;" *ngIf='auditData.controls.summaryDetails.invalid'>
+                  <ion-grid style="padding: 0px;margin: 0px 0;">
+                    <ion-row
+                      style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+                      <ion-col size="11">
+                        <ion-input type="text" readonly style="color: white;" value='Summary Details Required'>
+                        </ion-input>
+                      </ion-col>
+                      <ion-col size="1" class="ion-text-end"
+                        style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+                        <ion-icon name="information-circle-outline" color="light"></ion-icon>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-card>
+
+                <div style="font-weight: bold; padding: 10px;">
+                  {{summaryHead}}
+                </div>
+
+                <div [formGroupName]="i"
+                  *ngFor="let audit of auditData.controls.summaryDetails.controls; let i = index">
+
+                  <ion-radio-group formControlName='auditSummary'>
+                    <!-- added by archana for jira-id-MOBILE-796,MOBILE-786 -->
+                    <div *ngIf="isInterim&& subTypeValue!='INITIAL'">
+                    <ion-item *ngFor="let summarys of auditSummaryArray; let i = index " [disabled]="(!isInterim?i===3:false)||(radioSet?i===4:false)||(isInterim?i===0:false)" (click) ="setAuditSummary(summarys.sumId)">
+                    <!-- <ion-item *ngFor="let summarys of auditSummaryArray; let i = index " -->
+                      <!-- (click)="setAuditSummary(summarys.sumId)"> -->
+                      <ion-label style=" word-wrap: break-word;font-style: italic;" text-wrap>{{summarys.sumDesc}}
+                      </ion-label>
+                      <ion-radio slot="start" (ionSelect)="auditSummaryChange($event,i,'direct')"
+                        value={{summarys.sumDesc}} [disabled]="this.statusComplete == 1002">
+                      </ion-radio>
+                    </ion-item>
+                  </div>
+                  <div *ngIf="!isInterim ||subTypeValue=='INITIAL'">
+                    <ion-item *ngFor="let summarys of auditSummaryArray; let i = index " [disabled]="(!isInterim?i===3:false)||(radioSet?i===4:false)" (click) ="setAuditSummary(summarys.sumId)">
+                    <!-- <ion-item *ngFor="let summarys of auditSummaryArray; let i = index " -->
+                      <!-- (click)="setAuditSummary(summarys.sumId)"> -->
+                      <ion-label style=" word-wrap: break-word;font-style: italic;" text-wrap>{{summarys.sumDesc}}
+                      </ion-label>
+                      <ion-radio slot="start" (ionSelect)="auditSummaryChange($event,i,'direct')"
+                        value={{summarys.sumDesc}} [disabled]="this.statusComplete == 1002">
+                      </ion-radio>
+                    </ion-item>
+                  </div>
+                  </ion-radio-group>
+
+                </div>
+              </div>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+
+      <super-tab ondrag="checkViewinSuperTab()" *ngIf='!vesselDetails'>
+        <ion-content class="ionContent">
+          <div>
+            <form [formGroup]='auditData' (ngSubmit)="save(auditData.value,0)" #auditDataForm="ngForm">
+              <div formArrayName="narativeDetails">
+                <div [formGroupName]="i"
+                  *ngFor="let audit of auditData.controls.narativeDetails.controls; let i = index">
+
+                  <ion-card style="background: white;" *ngIf='!audit.valid'>
+                    <ion-grid style="padding: 0px;margin: 0px 0;">
+                      <ion-row
+                        style="background: #0d8290;    /* background-image: linear-gradient(45deg,#159957,#155799)!important;*/">
+                        <ion-col size="11">
+                          <ion-input type="text" readonly style="color: white;" value='Narrative Summary Required'>
+                          </ion-input>
+                        </ion-col>
+                        <ion-col size="1" class="ion-text-end"
+                          style="padding: 0px;margin-top: 10px;zoom:1.5;padding-right: 10px;">
+                          <ion-icon name="information-circle-outline" color="light"></ion-icon>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card>
+
+                  <!-- <div class="validation-errors">                          
+                      <div class="error-message" *ngIf="!audit.valid">
+                        <ion-row>
+                            <ion-col size='1'>
+                                <ion-icon style="color:#cc0033;zoom: 1.2;" name="information-circle-outline" ></ion-icon> 
+                            </ion-col>
+                            <ion-col size='1'>
+
+                            </ion-col>
+                            <ion-col size='10'>
+                                                 Narrative Summary required
+                              </ion-col>                                                                            
+                        </ion-row>                                  
+                      </div>                        
+                  </div> -->
+                  <!-- ngModel added  by  lokesh for  jira_id(678) -->
+                  <quill-editor [(ngModel)]="narrativeSummaryDesc" (onContentChanged)="narativeSummaryChange($event,'direct')"
+                    formControlName='narativeSummary' [readOnly]='this.statusComplete == 1002'>
+                  </quill-editor>
+                </div>
+              </div>
+
+              <!-- 
+
+  <div class="error-message" *ngIf="audit.get('internalAuditDate').hasError('required') && (audit.get('internalAuditDate').dirty || audit.get('internalAuditDate').touched)">
+                                Internal {{typeName}} Date required
+                            </div>
+ -->
+
+              <!-- <div *ngIf="auditData.controls.narativeDetails.invalid" class="invalid-feedback">
+                      Fill narativeSummary
+              </div> -->
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+
+      <super-tab *ngIf='!vesselDetails && isDMLC'>
+        <!---->
+        <ion-content class="ionContent" *ngIf="isDMLC">
+          <label></label>
+          <ion-title *ngIf='sspDataToShow.length==0 || this.letter == true' class="historytitle" style="color: #cc0033;"><!--modified by lokesh for jira_id(842)-->
+            No Data!
+          </ion-title>
+
+          <!-- changed by archana for jira ID-Mobile-816 -->
+          <ion-content class="ion-margin" *ngIf="this.letter == false">  <!--modified by lokesh  for jira id - MOBILE-626-->
+            <div class="forecast_container" *ngFor="let dmlc of sspDataToShow"> <!--changed by archana for jira ID-MOBILE-852 -->
+              <!-- <table class="letterHistoryTable">
+                <ion-row class="forecast_container">
+                  <ion-col size="0.5" class="tabledata">SL No.</ion-col>
+                  <ion-col class="tabledata">Review Type</ion-col>
+                  <ion-col class="tabledata">Review Date</ion-col>
+                  <ion-col size="3" class="tabledata">Location </ion-col>
+                  <ion-col class="tabledata">Review Letter No.</ion-col>
+                  <ion-col class="tabledata">DMLC II Issue Date</ion-col>
+                  <ion-col class="tabledata">Inspector </ion-col>
+
+                </ion-row>
+                <ion-row class="forecast_container" *ngFor="let dmlc of sspDataSource">
+                  <ion-col size="0.5" class="tableviewdata">{{ dmlc.slno }}</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.reviewtype }}</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.reviewdate }}</ion-col>
+                  <ion-col size="3" class="tableviewdata">{{ dmlc.location }}</ion-col>
+                  <ion-col class="tableviewdata" style="color: #3f51b5; font-weight: 600;"
+                    (click)="dmlc.reviewtype == 'INITIAL' ? reviewLetter('notSave') : amendmentReviewLetter('notSave')">
+                    {{
+                    dmlc.reviewletter }}</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.dmlcissuedate }}</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.inspector }}</ion-col>
+                </ion-row>
+
+              </table> -->
+              <!--Added by @Ramya on 23-06-2022 for jira id - MOBILE-520 START -->
+              <ion-grid class="letterHistoryTable">
+                <ion-row>
+                  <ion-col  class="tabledata">SL No.</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.slno }}</ion-col></ion-row>
+                <ion-row>
+                  <ion-col  class="tabledata">Review Type</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.reviewtype }}</ion-col></ion-row>
+                <ion-row>
+                  <ion-col  class="tabledata">Review Date</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.reviewdate }}</ion-col></ion-row>
+                <ion-row>
+                  <ion-col  class="tabledata">Location </ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.location }}</ion-col></ion-row>
+                <ion-row>  
+                  <ion-col  class="tabledata">Review Letter No.</ion-col>
+                  <ion-col class="tableviewdata" style="color: #3f51b5; font-weight: 600;"
+                  (click)="dmlc.reviewtype == 'INITIAL' ? reviewLetter('notSave') : amendmentReviewLetter('notSave')">
+                  {{dmlc.reviewletter }}</ion-col></ion-row>
+                <ion-row>  
+                  <ion-col  class="tabledata">DMLC II Issue Date</ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.dmlcissuedate }}</ion-col></ion-row>
+                <ion-row>  
+                  <ion-col  class="tabledata">Inspector </ion-col>
+                  <ion-col class="tableviewdata">{{ dmlc.inspector }}</ion-col></ion-row>
+              </ion-grid>
+              <!--Added by @Ramya on 23-06-2022 for jira id - MOBILE-520 END -->
+            </div>
+          </ion-content>
+        </ion-content>
+      </super-tab>
+    </super-tabs-container>
+  </super-tabs>
+</ion-content>
+
+<ion-footer no-border class="hide-on-keyboard-open" *ngIf='!vesselDetails'>
+  <ion-toolbar style=" --background: white !important;">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+
+          <!-- background: #350536; */
+    background: #2a284f;
+    background: #283558;
+    background: #213b5c; -->
+          <ion-chip outline color="primary" style="width: 100%;background:#213b5c;color: white;margin: 0;"
+            (click)="cancelClick()">
+
+            <ion-label style="margin-left: auto;margin-right: auto;">Cancel</ion-label>
+          </ion-chip>
+        </ion-col>
+        <ion-col size="6">
+          <ion-chip outline color="primary" style="width: 100%;background:#1b536e;color:white;margin: 0;"
+            (click)="auditDataForm.ngSubmit.emit()">
+            <ion-label style="margin-left: auto;margin-right: auto;">Save</ion-label>
+          </ion-chip>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

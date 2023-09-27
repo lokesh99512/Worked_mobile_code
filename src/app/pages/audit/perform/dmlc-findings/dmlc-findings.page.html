@@ -1,0 +1,81 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-icon name="arrow-back-outline" slot="start" color="light" (click)="goBack()" style="padding-left: 5px;zoom:2">
+    </ion-icon>
+    <ion-title style="margin-right: 40px;text-align: center;">
+      DMLC II NOTES</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card mode="ios" *ngFor="let findingItem of data.dmlcFindingData">
+    <ion-card-header>
+      <ion-card-subtitle>{{findingItem.serialNo}}</ion-card-subtitle>
+      <ion-item-divider></ion-item-divider>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col class="ion-no-padding ion-no-margin" size="6">
+            <ion-row>
+              <ion-col class="ion-no-padding" size="3">
+                <ion-icon style="margin-top:10px" name="list-outline"></ion-icon>
+              </ion-col>
+              <ion-col class="ion-no-padding" size="9">
+                <ion-card-subtitle style="font-size: 11px;">
+                  DMLC II Code <!--modified by lokesh for jira_id(817)-->
+                </ion-card-subtitle>
+                <ion-card-subtitle color="dark" style="font-size: 12px;">
+                  {{findingItem.auditCode}}
+                </ion-card-subtitle>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+
+          <ion-col class="ion-no-padding ion-no-margin" size="6">
+            <ion-row>
+              <ion-col class="ion-no-padding" size="3">
+                <ion-icon style="margin-top:10px" name="stats-chart-outline"></ion-icon>
+              </ion-col>
+              <ion-col class="ion-no-padding" size="9">
+                <ion-card-subtitle style="font-size: 11px;">
+                  Status
+                </ion-card-subtitle>
+                <ion-card-subtitle color="dark" style="font-size: 12px;">
+                  {{findingItem.statusDesc}}
+                </ion-card-subtitle>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+    </ion-card-content>
+    <ion-item-divider class="ion-no-padding ion-no-margin"></ion-item-divider>
+    <ion-row style="color:black">
+      <!-- delete button removed by archana for jira-ID-MOBILE-892 -->
+      <!-- <ion-col size="6"> -->
+        <!-- changed by @Ramya on 14-6-2022 for jira id - MOBILE-553 -->
+        <!-- <ion-button expand="full" color="danger" fill="clear" (click)="deleteOptions(findingItem)"
+        [disabled]="this.auditStatusId==1002">
+          Delete
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-col> -->
+      <ion-col size="12">
+        <ion-button expand="full" fill="clear" (click)="updateFinding(findingItem)"
+        [disabled]="this.auditStatusId==1002">
+          Update
+          <ion-icon slot="start" name="create-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+
+      <!--  <ion-col style="text-align: center;">
+        <ion-text color="dark" style="margin: 5px;">Finding Details</ion-text>
+      </ion-col> -->
+    </ion-row>
+  </ion-card>
+</ion-content>
